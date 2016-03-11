@@ -172,7 +172,7 @@ extern "C" {
 
 /*  This function retrieves the errno as it is known to the library.          */
 /*  The goal of this function is to make the code 100% portable, including    */
-/*  where the library is compiled with certain CRT library (on Windows) and   */
+/*  where the library is compiled with certain CRT library and                */
 /*  linked to an application that uses different CRT library.                 */
 GRID_EXPORT int grid_errno (void);
 

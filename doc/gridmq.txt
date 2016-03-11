@@ -116,9 +116,6 @@ TCP transport::
 TCPMUX transport::
     linkgridmq:grid_tcpmux[7]
 
-WebSocket transport::
-    linkgridmq:grid_ws[7]
-
 Following tools are installed with the library:
 
 gridcat::

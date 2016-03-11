@@ -95,32 +95,6 @@
         }\
     } while (0)
 
-/* Checks the condition. If false prints out the GetLastError info. */
-#define win_assert(x) \
-    do {\
-        if (grid_slow (!(x))) {\
-            char errstr [256];\
-            grid_win_error ((int) GetLastError (), errstr, 256);\
-            fprintf (stderr, "%s [%d] (%s:%d)\n",\
-                errstr, (int) GetLastError (), __FILE__, __LINE__);\
-            fflush (stderr);\
-            grid_err_abort ();\
-        }\
-    } while (0)
-
-/* Checks the condition. If false prints out the WSAGetLastError info. */
-#define wsa_assert(x) \
-    do {\
-        if (grid_slow (!(x))) {\
-            char errstr [256];\
-            grid_win_error (WSAGetLastError (), errstr, 256);\
-            fprintf (stderr, "%s [%d] (%s:%d)\n",\
-                errstr, (int) WSAGetLastError (), __FILE__, __LINE__);\
-            fflush (stderr);\
-            grid_err_abort ();\
-        }\
-    } while (0)
-
 /*  Assertion-like macros for easier fsm debugging. */
 #define grid_fsm_error(message, state, src, type) \
     do {\

@@ -34,7 +34,6 @@
 #include "../pipeline.h"
 #include "../survey.h"
 #include "../bus.h"
-#include "../ws.h"
 
 #include <string.h>
 
@@ -103,8 +102,6 @@ static const struct grid_symbol_properties sym_value_names [] = {
     {GRID_IPC, "GRID_IPC", GRID_NS_TRANSPORT,
         GRID_TYPE_NONE, GRID_UNIT_NONE},
     {GRID_TCP, "GRID_TCP", GRID_NS_TRANSPORT,
-        GRID_TYPE_NONE, GRID_UNIT_NONE},
-    {GRID_WS, "GRID_WS", GRID_NS_TRANSPORT,
         GRID_TYPE_NONE, GRID_UNIT_NONE},
 
     {GRID_PAIR, "GRID_PAIR", GRID_NS_PROTOCOL,
@@ -177,14 +174,8 @@ static const struct grid_symbol_properties sym_value_names [] = {
         GRID_TYPE_INT, GRID_UNIT_MILLISECONDS},
     {GRID_TCP_NODELAY, "GRID_TCP_NODELAY", GRID_NS_TRANSPORT_OPTION,
         GRID_TYPE_INT, GRID_UNIT_BOOLEAN},
-    {GRID_WS_MSG_TYPE, "GRID_WS_MSG_TYPE", GRID_NS_TRANSPORT_OPTION,
-        GRID_TYPE_INT, GRID_UNIT_NONE},
 
     {GRID_DONTWAIT, "GRID_DONTWAIT", GRID_NS_FLAG,
-        GRID_TYPE_NONE, GRID_UNIT_NONE},
-    {GRID_WS_MSG_TYPE_TEXT, "GRID_WS_MSG_TYPE_TEXT", GRID_NS_FLAG,
-        GRID_TYPE_NONE, GRID_UNIT_NONE},
-    {GRID_WS_MSG_TYPE_BINARY, "GRID_WS_MSG_TYPE_BINARY", GRID_NS_FLAG,
         GRID_TYPE_NONE, GRID_UNIT_NONE},
 
     {GRID_POLLIN, "GRID_POLLIN", GRID_NS_EVENT, GRID_TYPE_NONE, GRID_UNIT_NONE},

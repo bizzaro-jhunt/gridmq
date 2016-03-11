@@ -34,7 +34,6 @@ nninclude_HEADERS = \
     src/inproc.h \
     src/ipc.h \
     src/tcp.h \
-    src/ws.h \
     src/pair.h \
     src/pubsub.h \
     src/reqrep.h \
@@ -281,22 +280,6 @@ TRANSPORTS_TCP = \
     src/transports/tcp/tcp.h \
     src/transports/tcp/tcp.c
 
-TRANSPORTS_WS = \
-    src/transports/ws/aws.h \
-    src/transports/ws/aws.c \
-    src/transports/ws/bws.h \
-    src/transports/ws/bws.c \
-    src/transports/ws/cws.h \
-    src/transports/ws/cws.c \
-    src/transports/ws/sws.h \
-    src/transports/ws/sws.c \
-    src/transports/ws/ws.h \
-    src/transports/ws/ws.c \
-    src/transports/ws/ws_handshake.h \
-    src/transports/ws/ws_handshake.c \
-    src/transports/ws/sha1.h \
-    src/transports/ws/sha1.c
-
 TRANSPORTS_TCPMUX = \
     src/transports/tcpmux/atcpmux.h \
     src/transports/tcpmux/atcpmux.c \
@@ -314,7 +297,6 @@ NANOMSG_TRANSPORTS = \
     $(TRANSPORTS_INPROC) \
     $(TRANSPORTS_IPC) \
     $(TRANSPORTS_TCP) \
-    $(TRANSPORTS_WS) \
     $(TRANSPORTS_TCPMUX)
 
 libgridmq_la_SOURCES = \
@@ -351,7 +333,6 @@ MAN7 = \
     doc/grid_ipc.txt \
     doc/grid_tcp.txt \
     doc/grid_tcpmux.txt \
-    doc/grid_ws.txt \
     doc/grid_env.txt
 
 MAN3 = \
@@ -438,18 +419,6 @@ endif
 
 EXTRA_DIST += doc/asciidoc.conf doc/htmldoc.css $(MAN1) $(MAN3) $(MAN7)
 
-################################################################################
-#  performance tests                                                           #
-################################################################################
-
-noinst_PROGRAMS = \
-    perf/inproc_lat \
-    perf/inproc_thr \
-    perf/local_lat \
-    perf/remote_lat \
-    perf/local_thr \
-    perf/remote_thr
-
 LDADD = libgridmq.la
 
 ################################################################################
@@ -464,7 +433,6 @@ TRANSPORT_TESTS = \
     tests/ipc_stress \
     tests/tcp \
     tests/tcp_shutdown \
-    tests/ws \
     tests/tcpmux
 
 PROTOCOL_TESTS = \

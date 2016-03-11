@@ -47,7 +47,6 @@
 #include "../transports/inproc/inproc.h"
 #include "../transports/ipc/ipc.h"
 #include "../transports/tcp/tcp.h"
-#include "../transports/ws/ws.h"
 #include "../transports/tcpmux/tcpmux.h"
 
 #include "../protocols/pair/pair.h"
@@ -234,7 +233,6 @@ static void grid_global_init (void)
     grid_global_add_transport (grid_inproc);
     grid_global_add_transport (grid_ipc);
     grid_global_add_transport (grid_tcp);
-    grid_global_add_transport (grid_ws);
     grid_global_add_transport (grid_tcpmux);
 
     /*  Plug in individual socktypes. */
@@ -287,10 +285,6 @@ static void grid_global_init (void)
         strncpy (self.appname, addr, 63);
         self.appname[63] = '\0';
     } else {
-        /*  No cross-platform way to find out application binary.
-            Also, MSVC suggests using _getpid() instead of getpid(),
-            however, it's not clear whether the former is supported
-            by older versions of Windows/MSVC. */
         sprintf (self.appname, "gridmq.%d", getpid());
     }
 
@@ -352,8 +346,6 @@ static void grid_global_term (void)
 
     /*  Shut down the memory allocation subsystem. */
     grid_alloc_term ();
-
-    /*  On Windows, uninitialise the socket library. */
 }
 
 void grid_term (void)
