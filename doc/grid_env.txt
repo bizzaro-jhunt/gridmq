@@ -1,0 +1,78 @@
+grid_env(7)
+==========
+
+
+NAME
+----
+grid_env - gridmq environment variables
+
+
+SYNOPSIS
+--------
+Environment variables that influence the way gridmq works
+
+
+DESCRIPTION
+-----------
+
+*This functionality is experimental and a subject to change at any time*
+
+Following environment variables are used to turn on some debugging for any
+gridmq application. Please, do not try to parse output and do not
+build business logic based on it.
+
+GRID_PRINT_ERRORS::
+    If set to a non-empty string gridmq will print errors to stderr. Some
+    errors will be resolved by gridmq itself (e.g. if gridmq can't establish
+    connection it will retry again in a moment). Some depend on the
+    environment (e.g. port that is bound by another process need to be
+    released). In any case gridmq will not repeat the error message until
+    error is clear and appear again (e.g. connection established then broken
+    again).
+
+GRID_PRINT_STATISTICS::
+    If set to a non-empty string gridmq will print some statistics to stderr.
+    That's statistics is intended for debugging purposes only.
+
+GRID_STATISTICS_SOCKET::
+    The gridmq address to send statistics to. Nanomsg opens a GRID_PUB socket
+    and sends statistics there. The data is sent using the ESTP protocol.
+
+
+NOTES
+-----
+
+The output of both debugging facilities (GRID_PRINT_ERRORS, GRID_PRINT_STATISTICS)
+is intended for reading by a human and a subject for change at any time (even
+after 1.0 release).
+
+The GRID_STATISTICS_SOCKET facility is intended to be used by system
+administrators to debug network and application issues. The ESTP format is
+stable. But the gridmq support of it is experimental and is subject to change
+or removal until 1.0 release.
+
+Anyway, there is *no excuse* for making application logic based on the data
+described here.  And by application logic we mean any of the following:
+
+* Load balancing
+* Failover
+* Routing requests
+* Executing grid_connect/grid_bind
+
+There are other ways for load-balancing and failover in gridmq. If you feel
+you can't do something, consider asking on the mailing list first.
+
+
+SEE ALSO
+--------
+linkgridmq:gridmq[7]
+
+http://github.com/estp
+
+http://github.com/estp/estp/blob/master/specification.rst
+
+
+AUTHORS
+-------
+Paul Colomiets <paul@colomiets.name>
+

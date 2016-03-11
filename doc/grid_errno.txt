@@ -1,0 +1,57 @@
+grid_errno(3)
+===========
+
+NAME
+----
+grid_errno - retrieve the current errno
+
+
+SYNOPSIS
+--------
+*#include <gridmq/grid.h>*
+
+*int grid_errno (void);*
+
+
+DESCRIPTION
+-----------
+Returns value of 'errno' for the current thread.
+
+On most systems, 'errno' can be accessed directly and this function is not
+needed. However, on Windows, there are multiple implementations of the CRT
+library (single-threaded, multi-threaded, release, debug) and each of them
+has its own instance of 'errno'. Thus, if gridmq library and the application
+that uses it link with different versions of the CRT library, they don't share
+the same instance of 'errno'. Consequently, error codes set by gridmq cannot be
+accessed by the application. To overcome this problem, application can use
+_grid_errno()_ function to retrieve gridmq's value of 'errno'.
+
+RETURN VALUE
+------------
+Returns value of 'errno' for the current thread.
+
+
+ERRORS
+------
+No errors are defined.
+
+
+EXAMPLE
+-------
+
+----
+rc = grid_send (s, "ABC", 3, 0);
+if (rc < 0)
+    printf ("grid_send failed with error code %d\n", grid_errno ());
+----
+
+
+SEE ALSO
+--------
+linkgridmq:grid_strerror[3]
+linkgridmq:gridmq[7]
+
+AUTHORS
+-------
+Martin Sustrik <sustrik@250bpm.com>
+

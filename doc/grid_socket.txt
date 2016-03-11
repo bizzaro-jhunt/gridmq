@@ -1,0 +1,92 @@
+grid_socket(3)
+============
+
+NAME
+----
+grid_socket - create an SP socket
+
+
+SYNOPSIS
+--------
+*#include <gridmq/grid.h>*
+
+*int grid_socket (int 'domain', int 'protocol');*
+
+
+DESCRIPTION
+-----------
+Creates an SP socket with specified 'domain' and 'protocol'. Returns a file
+descriptor for the newly created socket.
+
+Following domains are defined at the moment:
+
+*AF_SP*::
+Standard full-blown SP socket.
+
+*AF_SP_RAW*::
+Raw SP socket. Raw sockets omit the end-to-end functionality found in AF_SP
+sockets and thus can be used to implement intermediary devices in SP topologies.
+
+'protocol' parameter defines the type of the socket, which in turn determines
+the exact semantics of the socket. Check manual pages for individual SP
+protocols to get the list of available socket types.
+
+The newly created socket is initially not associated with any endpoints.
+In order to establish a message flow at least one endpoint has to be added
+to the socket using linkgridmq:grid_bind[3] or linkgridmq:grid_connect[3]
+function.
+
+Also note that 'type' argument as found in standard _socket(2)_ function is
+omitted from _grid_socket_. All the SP sockets are message-based and thus of
+_SOCK_SEQPACKET_ type.
+
+
+RETURN VALUE
+------------
+If the function succeeds file descriptor of the new socket is returned.
+Otherwise, -1 is returned and 'errno' is set to to one of
+the values defined below.
+
+Note that file descriptors returned by _grid_socket_ function are not standard
+file descriptors and will exhibit undefined behaviour when used with system
+functions. Moreover, it may happen that a system file descriptor and file
+descriptor of an SP socket will incidentally collide (be equal).
+
+
+ERRORS
+------
+*EAFNOSUPPORT*::
+Specified address family is not supported.
+*EINVAL*::
+Unknown protocol.
+*EMFILE*::
+The limit on the total number of open SP sockets or OS limit for file
+descriptors has been reached.
+*ETERM*::
+The library is terminating.
+
+EXAMPLE
+-------
+
+----
+int s = grid_socket (AF_SP, GRID_PUB);
+assert (s >= 0);
+----
+
+
+SEE ALSO
+--------
+linkgridmq:grid_pubsub[7]
+linkgridmq:grid_reqrep[7]
+linkgridmq:grid_pipeline[7]
+linkgridmq:grid_survey[7]
+linkgridmq:grid_bus[7]
+linkgridmq:grid_bind[3]
+linkgridmq:grid_connect[3]
+linkgridmq:grid_close[3]
+linkgridmq:gridmq[7]
+
+AUTHORS
+-------
+Martin Sustrik <sustrik@250bpm.com>
+

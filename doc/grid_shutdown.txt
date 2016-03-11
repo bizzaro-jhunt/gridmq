@@ -1,0 +1,64 @@
+grid_shutdown(3)
+==============
+
+NAME
+----
+grid_shutdown - remove an endpoint from a socket
+
+
+SYNOPSIS
+--------
+*#include <gridmq/grid.h>*
+
+*int grid_shutdown (int 's', int 'how');*
+
+
+DESCRIPTION
+-----------
+Removes an endpoint from socket 's'. 'how' parameter specifies the ID of the
+endpoint to remove as returned by prior call to linkgridmq:grid_bind[3] or
+linkgridmq:grid_connect[3]. _grid_shutdown()_ call will return immediately,
+however, the library will try to deliver any outstanding outbound messages to
+the endpoint for the time specified by _GRID_LINGER_ socket option.
+
+
+RETURN VALUE
+------------
+If the function succeeds zero is returned. Otherwise, -1 is
+returned and 'errno' is set to to one of the values defined below.
+
+
+ERRORS
+------
+*EBADF*::
+The provided socket is invalid.
+*EINVAL*::
+The 'how' parameter doesn't correspond to an active endpoint.
+*EINTR*::
+Operation was interrupted by a signal. The endpoint is not fully closed yet.
+Operation can be re-started by calling _grid_shutdown()_ again.
+*ETERM*::
+The library is terminating.
+
+
+EXAMPLE
+-------
+
+----
+s = grid_socket (AF_SP, GRID_PUB);
+eid = grid_bind (s, "inproc://test");
+grid_shutdown (s, eid);
+----
+
+
+SEE ALSO
+--------
+linkgridmq:grid_socket[3]
+linkgridmq:grid_bind[3]
+linkgridmq:grid_connect[3]
+linkgridmq:gridmq[7]
+
+AUTHORS
+-------
+Martin Sustrik <sustrik@250bpm.com>
+

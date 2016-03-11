@@ -1,0 +1,58 @@
+grid_term(3)
+==========
+
+NAME
+----
+grid_term - notify all sockets about process termination
+
+
+SYNOPSIS
+--------
+*#include <gridmq/grid.h>*
+
+*void grid_term (void);*
+
+
+DESCRIPTION
+-----------
+To help with shutdown of multi-threaded programs gridmq provides the
+_grid_term()_ function which informs all the open sockets that process
+termination is underway.
+
+If a socket is blocked inside a blocking function, such as
+linkgridmq:grid_recv[3], it will be unblocked  and ETERM error will be returned
+to the user. Similarly, any subsequent attempt to invoke a socket function other
+than linkgridmq:grid_close[3] after _grid_term()_ was called will result
+in ETERM error.
+
+If waiting for _GRID_SNDFD_ or _GRID_RCVFD_ using a polling function, such as
+_poll()_ or _select()_, the call will unblock with both _GRID_SNDFD_ and
+_GRID_RCVFD_ signaled.
+
+The _grid_term()_ function itself is non-blocking.
+
+
+EXAMPLE
+-------
+
+----
+s = grid_socket (AF_SP, GRID_PAIR);
+grid_term ();
+rc = grid_send (s, "ABC", 3, 0);
+assert (rc == -1 && errno == ETERM);
+----
+
+
+SEE ALSO
+--------
+linkgridmq:grid_close[3]
+linkgridmq:grid_send[3]
+linkgridmq:grid_recv[3]
+linkgridmq:grid_getsockopt[3]
+linkgridmq:gridmq[7]
+
+
+AUTHORS
+-------
+Martin Sustrik <sustrik@250bpm.com>
+

@@ -1,0 +1,57 @@
+grid_survey(7)
+============
+
+NAME
+----
+grid_survey - survey scalability protocol
+
+
+SYNOPSIS
+--------
+*#include <gridmq/grid.h>*
+
+*#include <gridmq/survey.h>*
+
+
+DESCRIPTION
+-----------
+Allows to broadcast a survey to multiple locations and gather the responses.
+
+Socket Types
+~~~~~~~~~~~~
+
+GRID_SURVEYOR::
+    Used to send the survey. The survey is delivered to all the connected
+    respondents. Once the query is sent, the socket can be used to receive
+    the responses. When the survey deadline expires, receive will return
+    ETIMEDOUT error.
+GRID_RESPONDENT::
+    Use to respond to the survey. Survey is received using receive function,
+    response is sent using send function. This socket can be connected to
+    at most one peer.
+
+
+Socket Options
+~~~~~~~~~~~~~~
+
+GRID_SURVEYOR_DEADLINE::
+    Specifies how long to wait for responses to the survey. Once the deadline
+    expires, receive function will return ETIMEDOUT error and all subsequent
+    responses to the survey will be silently dropped. The deadline is measured
+    in milliseconds. Option type is int. Default value is 1000 (1 second).
+
+
+SEE ALSO
+--------
+linkgridmq:grid_bus[7]
+linkgridmq:grid_pubsub[7]
+linkgridmq:grid_reqrep[7]
+linkgridmq:grid_pipeline[7]
+linkgridmq:grid_pair[7]
+linkgridmq:gridmq[7]
+
+
+AUTHORS
+-------
+Martin Sustrik <sustrik@250bpm.com>
+

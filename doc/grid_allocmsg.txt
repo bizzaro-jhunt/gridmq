@@ -1,0 +1,68 @@
+grid_allocmsg(3)
+==============
+
+NAME
+----
+grid_allocmsg - allocate a message
+
+
+SYNOPSIS
+--------
+*#include <gridmq/grid.h>*
+
+*void *grid_allocmsg (size_t 'size', int 'type');*
+
+
+DESCRIPTION
+-----------
+Allocate a message of the specified 'size' to be sent in zero-copy fashion.
+The content of the message is undefined after allocation and it should be filled
+in by the user. While linkgridmq:grid_send[3] and linkgridmq:grid_sendmsg[3] allow
+to send arbitrary buffers, buffers allocated using _grid_allocmsg()_ can be more
+efficient for large messages as they allow for using zero-copy techniques.
+
+'type' parameter specifies type of allocation mechanism to use. Zero is the
+default one, however, individual transport mechanisms may define their
+own allocation mechanisms, such as allocating in shared memory or allocating
+a memory block pinned down to a physical memory address. Such allocation,
+when used with the transport that defines them, should be more efficient
+than the default allocation mechanism.
+
+
+RETURN VALUE
+------------
+If the function succeeds pointer to newly allocated buffer is returned.
+Otherwise, NULL is returned and 'errno' is set to to one of the values
+defined below.
+
+
+ERRORS
+------
+*EINVAL*::
+Supplied allocation 'type' is invalid.
+*ENOMEM*::
+Not enough memory to allocate the message.
+
+
+EXAMPLE
+-------
+
+----
+void *buf = grid_allocmsg (12, 0);
+memcpy (buf, "Hello world!", 12);
+grid_send (s, &buf, GRID_MSG, 0);
+----
+
+
+SEE ALSO
+--------
+linkgridmq:grid_freemsg[3]
+linkgridmq:grid_reallocmsg[3]
+linkgridmq:grid_send[3]
+linkgridmq:grid_sendmsg[3]
+linkgridmq:gridmq[7]
+
+AUTHORS
+-------
+Martin Sustrik <sustrik@250bpm.com>
+

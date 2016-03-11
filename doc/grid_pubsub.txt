@@ -1,0 +1,103 @@
+grid_pubsub(7)
+============
+
+NAME
+----
+grid_pubsub - publish/subscribe scalability protocol
+
+
+SYNOPSIS
+--------
+*#include <gridmq/grid.h>*
+
+*#include <gridmq/pubsub.h>*
+
+
+DESCRIPTION
+-----------
+Broadcasts messages to multiple destinations.
+
+Messages are sent from GRID_PUB sockets and will only be received by GRID_SUB
+sockets that have subscribed to the matching 'topic'. Topic is an arbitrary
+sequence of bytes at the beginning of the message body. The GRID_SUB socket will
+determine whether a message should be delivered to the user by comparing the
+subscribed topics (using GRID_SUB_SUBSCRIBE on a full SUB socket) to the bytes
+initial bytes in the incoming message, up to the size of the topic.
+
+----
+grid_setsockopt (s, GRID_SUB, GRID_SUB_SUBSCRIBE, "Hello", 5);
+----
+
+Will match any message with intial 5 bytes being "Hello", for example,
+message "Hello, World!" will match.
+
+Topic with zero length matches any message.
+
+If the socket is subscribed to multiple topics, message matching any of them
+will be delivered to the user.
+
+Since the filtering is performed on the Subscriber side, all the messages 
+from Publisher will be sent over the transport layer. 
+
+The entire message, including the topic, is delivered to the user.
+
+Socket Types
+~~~~~~~~~~~~
+
+GRID_PUB::
+    This socket is used to distribute messages to multiple destinations.
+    Receive operation is not defined.
+GRID_SUB::
+    Receives messages from the publisher. Only messages that the socket is
+    subscribed to are received. When the socket is created there are no
+    subscriptions and thus no messages will be received. Send operation is
+    not defined on this socket.
+
+Socket Options
+~~~~~~~~~~~~~~
+
+GRID_SUB_SUBSCRIBE::
+    Defined on full SUB socket. Subscribes for a particular topic. Type of the
+    option is string. A single GRID_SUB socket can handle multiple subscriptions.
+GRID_SUB_UNSUBSCRIBE::
+    Defined on full SUB socket. Unsubscribes from a particular topic. Type of
+    the option is string.
+
+EXAMPLE
+~~~~~~~
+
+----
+int pub = grid_socket (AF_SP, GRID_PUB);
+int sub = grid_socket (AF_SP, GRID_SUB);
+int nbytes;
+void *buf = NULL;
+
+grid_setsockopt (sub, GRID_SUB, GRID_SUB_SUBSCRIBE, "foo", 3);
+grid_setsockopt (sub, GRID_SUB, GRID_SUB_SUBSCRIBE, "bar", 3);
+
+nbytes = grid_send (pub, "foo|Hello!", 10);
+assert(nbytes == 10);
+nbytes = grid_recv (sub, &buf, GRID_MSG, 0);
+assert (nbytes == 10);
+grid_freemsg (buf);
+
+nbytes = grid_send (pub, "baz|World!", 10);
+
+/* Message is not delivered because if matches no subscription. */
+nbytes = grid_recv(sub, &buf, GRID_MSG, 0);
+----
+
+
+SEE ALSO
+--------
+linkgridmq:grid_bus[7]
+linkgridmq:grid_reqrep[7]
+linkgridmq:grid_pipeline[7]
+linkgridmq:grid_survey[7]
+linkgridmq:grid_pair[7]
+linkgridmq:gridmq[7]
+
+AUTHORS
+-------
+Martin Sustrik <sustrik@250bpm.com>
+

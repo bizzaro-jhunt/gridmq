@@ -1,0 +1,59 @@
+grid_close(3)
+===========
+
+NAME
+----
+grid_close - close an SP socket
+
+
+SYNOPSIS
+--------
+*#include <gridmq/grid.h>*
+
+*int grid_close (int 's');*
+
+
+DESCRIPTION
+-----------
+Closes the socket 's'. Any buffered inbound messages that were not yet received
+by the application will be discarded. The library will try to deliver any
+outstanding outbound messages for the time specified by _GRID_LINGER_ socket
+option. The call will block in the meantime.
+
+
+RETURN VALUE
+------------
+If the function succeeds zero is returned. Otherwise, -1 is
+returned and 'errno' is set to to one of the values defined below.
+
+
+ERRORS
+------
+*EBADF*::
+The provided socket is invalid.
+*EINTR*::
+Operation was interrupted by a signal. The socket is not fully closed yet.
+Operation can be re-started by calling _grid_close()_ again.
+
+
+EXAMPLE
+-------
+
+----
+int s = grid_socket (AF_SP, GRID_PUB);
+assert (s >= 0);
+int rc = grid_close (s);
+assert (rc == 0);
+----
+
+
+SEE ALSO
+--------
+linkgridmq:grid_socket[3]
+linkgridmq:grid_setsockopt[3]
+linkgridmq:gridmq[7]
+
+AUTHORS
+-------
+Martin Sustrik <sustrik@250bpm.com>
+

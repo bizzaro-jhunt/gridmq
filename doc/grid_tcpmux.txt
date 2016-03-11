@@ -1,0 +1,72 @@
+grid_tcpmux(7)
+============
+
+NAME
+----
+grid_tcpmux - TCPMUX transport mechanism
+
+
+SYNOPSIS
+--------
+*#include <gridmq/grid.h>*
+
+*#include <gridmq/tcpmux.h>*
+
+
+DESCRIPTION
+-----------
+
+THIS IS AN EXPERIMENTAL FEATURE. DO NOT USE.
+THE FUNCTIONALITY IS SUBJECT TO CHANGE WITHOUT PRIOR NOTICE.
+
+TCPMUX transport is basically the same as TCP transport
+(see linkgridmq:grid_tcp[7]) except that it allows to specify service names
+along with IP addresses and TCP ports. What it means in practice is that many
+applications on the same box can share the same TCP port.
+
+When connecting and binding use the same connection string syntax as with
+TCP transport, except that the initial protocol specification should be
+'tcpmux://' instead of 'tcp://' and that the connection string should end
+with a slash and a service name:
+
+----
+grid_connect (s, "tcpmux://192.168.0.1:5555/foo");
+----
+
+When binding to a TCPMUX endpoint, linkgridmq:grid_tcpmuxd[1] daemon must be
+running on the box and specified port. There is no such requirement when
+connecting to a TCPMUX endpoint.
+
+
+Socket Options
+~~~~~~~~~~~~~~
+
+GRID_TCPMUX_NODELAY::
+    This option, when set to 1, disables Nagle's algorithm. It also disables
+    delaying of TCP acknowledgments. Using this option improves latency at
+    the expense of throughput. Type of this option is int. Default value is 0.
+
+
+EXAMPLE
+-------
+
+----
+grid_bind (s1, "tcpmux://*:5555/foo");
+grid_connect (s2, "tcpmux://server1.example.org:5555/foo");
+----
+
+SEE ALSO
+--------
+linkgridmq:grid_tcpmuxd[1]
+linkgridmq:grid_tcp[7]
+linkgridmq:grid_inproc[7]
+linkgridmq:grid_ipc[7]
+linkgridmq:grid_bind[3]
+linkgridmq:grid_connect[3]
+linkgridmq:gridmq[7]
+
+
+AUTHORS
+-------
+Martin Sustrik <sustrik@250bpm.com>
+

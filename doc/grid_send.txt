@@ -1,0 +1,98 @@
+grid_send(3)
+==========
+
+NAME
+----
+grid_send - send a message
+
+
+SYNOPSIS
+--------
+*#include <gridmq/grid.h>*
+
+*int grid_send (int 's', const void '*buf', size_t 'len', int 'flags');*
+
+DESCRIPTION
+-----------
+The function will send a message containing the data from buffer pointed to
+by 'buf' parameter to the socket 's'. The message will be 'len' bytes long.
+
+Alternatively, to send a buffer allocated by linkgridmq:grid_allocmsg[3] function
+set the buf parameter to point to the pointer to the buffer and 'len' parameter
+to _GRID_MSG_ constant. In this case a successful call to _grid_send_ will
+deallocate the buffer. Trying to deallocate it afterwards will result in
+undefined behaviour.
+
+Which of the peers the message will be sent to is determined by
+the particular socket type.
+
+The 'flags' argument is a combination of the flags defined below:
+
+*GRID_DONTWAIT*::
+Specifies that the operation should be performed in non-blocking mode. If the
+message cannot be sent straight away, the function will fail with 'errno' set
+to EAGAIN.
+
+
+RETURN VALUE
+------------
+If the function succeeds, the number of bytes in the message is returned.
+Otherwise, -1 is returned and 'errno' is set to to one of the
+values defined below.
+
+
+ERRORS
+------
+*EFAULT*::
+'buf' is NULL or 'len' is GRID_MSG and the message pointer (pointed to by
+'buf') is NULL.
+*EBADF*::
+The provided socket is invalid.
+*ENOTSUP*::
+The operation is not supported by this socket type.
+*EFSM*::
+The operation cannot be performed on this socket at the moment because the socket
+is not in the appropriate state.  This error may occur with socket types that
+switch between several states.
+*EAGAIN*::
+Non-blocking mode was requested and the message cannot be sent at the moment.
+*EINTR*::
+The operation was interrupted by delivery of a signal before the message was
+sent.
+*ETIMEDOUT*::
+Individual socket types may define their own specific timeouts. If such timeout
+is hit, this error will be returned.
+*ETERM*::
+The library is terminating.
+
+EXAMPLE
+-------
+
+Using data directly:
+
+----
+nbytes = grid_send (s, "ABC", 3, 0);
+assert (nbytes == 3);
+----
+
+Using a pre-allocated message buffer:
+
+----
+void *msg = grid_allocmsg(3, 0);
+strncpy(msg, "ABC", 3);
+nbytes = grid_send (s, &msg, GRID_MSG, 0);
+assert (nbytes == 3);
+----
+
+
+SEE ALSO
+--------
+linkgridmq:grid_recv[3]
+linkgridmq:grid_sendmsg[3]
+linkgridmq:grid_socket[3]
+linkgridmq:gridmq[7]
+
+AUTHORS
+-------
+Martin Sustrik <sustrik@250bpm.com>
+
