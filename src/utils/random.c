@@ -23,14 +23,8 @@
 #include "random.h"
 #include "clock.h"
 #include "fast.h"
-
-#ifdef GRID_HAVE_WINDOWS
-#include "win.h"
-#else
 #include <sys/types.h>
 #include <unistd.h>
-#endif
-
 #include <string.h>
 
 static uint64_t grid_random_state;
@@ -38,12 +32,7 @@ static uint64_t grid_random_state;
 void grid_random_seed ()
 {
     uint64_t pid;
-
-#ifdef GRID_HAVE_WINDOWS
-    pid = (uint64_t) GetCurrentProcessId ();
-#else
     pid = (uint64_t) getpid ();
-#endif
 
     /*  The initial state for pseudo-random number generator is computed from
         the exact timestamp and process ID. */

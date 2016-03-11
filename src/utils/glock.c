@@ -21,37 +21,7 @@
 */
 
 #include "glock.h"
-
-#if defined GRID_HAVE_WINDOWS
-
-#include "win.h"
 #include "err.h"
-
-static LONG grid_glock_initialised = 0;
-static CRITICAL_SECTION grid_glock_cs;
-
-static void grid_glock_init (void)
-{
-    if (InterlockedCompareExchange (&grid_glock_initialised, 1, 0) == 0)
-        InitializeCriticalSection (&grid_glock_cs);
-}
-
-void grid_glock_lock (void)
-{
-    grid_glock_init ();
-    EnterCriticalSection (&grid_glock_cs);
-}
-
-void grid_glock_unlock (void)
-{
-    grid_glock_init ();
-    LeaveCriticalSection (&grid_glock_cs);
-}
-
-#else
-
-#include "err.h"
-
 #include <pthread.h>
 
 static pthread_mutex_t grid_glock_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -71,6 +41,3 @@ void grid_glock_unlock (void)
     rc = pthread_mutex_unlock (&grid_glock_mutex);
     errnum_assert (rc == 0, rc);
 }
-
-#endif
-

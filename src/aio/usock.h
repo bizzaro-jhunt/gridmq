@@ -45,11 +45,79 @@
     performance optimal make sure that this value is larger than network MTU. */
 #define GRID_USOCK_BATCH_SIZE 2048
 
-#if defined GRID_HAVE_WINDOWS
-#include "usock_win.h"
-#else
-#include "usock_posix.h"
-#endif
+#include "fsm.h"
+#include "worker.h"
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/uio.h>
+
+struct grid_usock {
+
+    /*  State machine base class. */
+    struct grid_fsm fsm;
+    int state;
+
+    /*  The worker thread the usock is associated with. */
+    struct grid_worker *worker;
+
+    /*  The underlying OS socket and handle that represents it in the poller. */
+    int s;
+    struct grid_worker_fd wfd;
+
+    /*  Members related to receiving data. */
+    struct {
+
+        /*  The buffer being filled in at the moment. */
+        uint8_t *buf;
+        size_t len;
+
+        /*  Buffer for batch-reading inbound data. */
+        uint8_t *batch;
+
+        /*  Size of the batch buffer. */
+        size_t batch_len;
+
+        /*  Current position in the batch buffer. The data preceding this
+            position were already received by the user. The data that follow
+            will be received in the future. */
+        size_t batch_pos;
+
+        /*  File descriptor received via SCM_RIGHTS, if any. */
+        int *pfd;
+    } in;
+
+    /*  Members related to sending data. */
+    struct {
+
+        /*  msghdr being sent at the moment. */
+        struct msghdr hdr;
+
+        /*  List of buffers being sent at the moment. Referenced from 'hdr'. */
+        struct iovec iov [GRID_USOCK_MAX_IOVCNT];
+    } out;
+
+    /*  Asynchronous tasks for the worker. */
+    struct grid_worker_task task_connecting;
+    struct grid_worker_task task_connected;
+    struct grid_worker_task task_accept;
+    struct grid_worker_task task_send;
+    struct grid_worker_task task_recv;
+    struct grid_worker_task task_stop;
+
+    /*  Events raised by the usock. */
+    struct grid_fsm_event event_established;
+    struct grid_fsm_event event_sent;
+    struct grid_fsm_event event_received;
+    struct grid_fsm_event event_error;
+
+    /*  In ACCEPTING state points to the socket being accepted.
+        In BEING_ACCEPTED state points to the listener socket. */
+    struct grid_usock *asock;
+
+    /*  Errno remembered in GRID_USOCK_ERROR state  */
+    int errnum;
+};
 
 void grid_usock_init (struct grid_usock *self, int src, struct grid_fsm *owner);
 void grid_usock_term (struct grid_usock *self);

@@ -28,11 +28,8 @@
 #include "../../utils/closefd.h"
 
 #include <string.h>
-
-#ifndef GRID_HAVE_WINDOWS
 #include <sys/types.h>
 #include <netinet/in.h>
-#endif
 
 /*  Private functions. */
 static void grid_iface_any (int ipv4only, struct sockaddr_storage *result,

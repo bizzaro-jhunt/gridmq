@@ -90,14 +90,6 @@ void grid_aipc_start (struct grid_aipc *self, struct grid_usock *listener)
     self->listener_owner.fsm = &self->fsm;
     grid_usock_swap_owner (listener, &self->listener_owner);
 
-#if defined GRID_HAVE_WINDOWS
-    /* Get/Set security attribute pointer*/
-    grid_epbase_getopt (self->epbase, GRID_IPC, GRID_IPC_SEC_ATTR, &self->usock.sec_attr, &sz);
-
-    grid_epbase_getopt (self->epbase, GRID_IPC, GRID_IPC_OUTBUFSZ, &self->usock.outbuffersz, &sz);
-    grid_epbase_getopt (self->epbase, GRID_IPC, GRID_IPC_INBUFSZ, &self->usock.inbuffersz, &sz);
-#endif
-
     /*  Start the state machine. */
     grid_fsm_start (&self->fsm);
 }

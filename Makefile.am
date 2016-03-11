@@ -86,14 +86,10 @@ NANOMSG_AIO = \
     src/aio/usock.c \
     src/aio/usock_posix.h \
     src/aio/usock_posix.inc \
-    src/aio/usock_win.h \
-    src/aio/usock_win.inc \
     src/aio/worker.h \
     src/aio/worker.c \
     src/aio/worker_posix.h \
-    src/aio/worker_posix.inc \
-    src/aio/worker_win.h \
-    src/aio/worker_win.inc
+    src/aio/worker_posix.inc
 
 NANOMSG_UTILS = \
     src/utils/alloc.h \
@@ -118,8 +114,6 @@ NANOMSG_UTILS = \
     src/utils/efd_pipe.inc \
     src/utils/efd_socketpair.h \
     src/utils/efd_socketpair.inc \
-    src/utils/efd_win.h \
-    src/utils/efd_win.inc \
     src/utils/err.h \
     src/utils/err.c \
     src/utils/fast.h \
@@ -149,9 +143,6 @@ NANOMSG_UTILS = \
     src/utils/thread.c \
     src/utils/thread_posix.h \
     src/utils/thread_posix.inc \
-    src/utils/thread_win.h \
-    src/utils/thread_win.inc \
-    src/utils/win.h \
     src/utils/wire.h \
     src/utils/wire.c
 
@@ -604,9 +595,7 @@ endif #NANOCAT
 
 EXTRA_DIST += \
     ./abi_version.sh \
-    ./package_version.sh \
-    ./src/CMakeLists.txt \
-    ./CMakeLists.txt
+    ./package_version.sh
 
 diagrams:
 	-mkdir -p doc/diagrams

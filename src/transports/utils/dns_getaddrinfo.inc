@@ -27,12 +27,9 @@
 #include "../../utils/attr.h"
 
 #include <string.h>
-
-#ifndef GRID_HAVE_WINDOWS
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#endif
 
 #define GRID_DNS_STATE_IDLE 1
 #define GRID_DNS_STATE_DONE 2

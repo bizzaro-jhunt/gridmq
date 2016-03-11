@@ -21,12 +21,7 @@
 */
 
 #include "wire.h"
-
-#if defined GRID_HAVE_WINDOWS
-#include "win.h"
-#else
 #include <arpa/inet.h>
-#endif
 
 uint16_t grid_gets (const uint8_t *buf)
 {

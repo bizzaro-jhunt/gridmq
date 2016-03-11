@@ -40,9 +40,7 @@ void grid_atomic_term (struct grid_atomic *self)
 
 uint32_t grid_atomic_inc (struct grid_atomic *self, uint32_t n)
 {
-#if defined GRID_ATOMIC_WINAPI
-    return (uint32_t) InterlockedExchangeAdd ((LONG*) &self->n, n);
-#elif defined GRID_ATOMIC_SOLARIS
+#if defined GRID_ATOMIC_SOLARIS
     return atomic_add_32_nv (&self->n, n) - n;
 #elif defined GRID_ATOMIC_GCC_BUILTINS
     return (uint32_t) __sync_fetch_and_add (&self->n, n);
@@ -60,9 +58,7 @@ uint32_t grid_atomic_inc (struct grid_atomic *self, uint32_t n)
 
 uint32_t grid_atomic_dec (struct grid_atomic *self, uint32_t n)
 {
-#if defined GRID_ATOMIC_WINAPI
-    return (uint32_t) InterlockedExchangeAdd ((LONG*) &self->n, -((LONG) n));
-#elif defined GRID_ATOMIC_SOLARIS
+#if defined GRID_ATOMIC_SOLARIS
     return atomic_add_32_nv (&self->n, -((int32_t) n)) + n;
 #elif defined GRID_ATOMIC_GCC_BUILTINS
     return (uint32_t) __sync_fetch_and_sub (&self->n, n);

@@ -30,9 +30,7 @@
 
 #include "fd.h"
 
-#if defined GRID_HAVE_WINDOWS
-#include "efd_win.h"
-#elif defined GRID_HAVE_EVENTFD
+#if defined GRID_HAVE_EVENTFD
 #include "efd_eventfd.h"
 #elif defined GRID_HAVE_PIPE
 #include "efd_pipe.h"

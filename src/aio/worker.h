@@ -26,12 +26,50 @@
 
 #include "fsm.h"
 #include "timerset.h"
+#include "../utils/queue.h"
+#include "../utils/mutex.h"
+#include "../utils/thread.h"
+#include "../utils/efd.h"
 
-#if defined GRID_HAVE_WINDOWS
-#include "worker_win.h"
-#else
-#include "worker_posix.h"
-#endif
+#include "poller.h"
+
+#define GRID_WORKER_FD_IN GRID_POLLER_IN
+#define GRID_WORKER_FD_OUT GRID_POLLER_OUT
+#define GRID_WORKER_FD_ERR GRID_POLLER_ERR
+
+struct grid_worker_fd {
+    int src;
+    struct grid_fsm *owner;
+    struct grid_poller_hndl hndl;
+};
+
+void grid_worker_fd_init (struct grid_worker_fd *self, int src,
+    struct grid_fsm *owner);
+void grid_worker_fd_term (struct grid_worker_fd *self);
+
+struct grid_worker_task {
+    int src;
+    struct grid_fsm *owner;
+    struct grid_queue_item item;
+};
+
+struct grid_worker {
+    struct grid_mutex sync;
+    struct grid_queue tasks;
+    struct grid_queue_item stop;
+    struct grid_efd efd;
+    struct grid_poller poller;
+    struct grid_poller_hndl efd_hndl;
+    struct grid_timerset timerset;
+    struct grid_thread thread;
+};
+
+void grid_worker_add_fd (struct grid_worker *self, int s, struct grid_worker_fd *fd);
+void grid_worker_rm_fd(struct grid_worker *self, struct grid_worker_fd *fd);
+void grid_worker_set_in (struct grid_worker *self, struct grid_worker_fd *fd);
+void grid_worker_reset_in (struct grid_worker *self, struct grid_worker_fd *fd);
+void grid_worker_set_out (struct grid_worker *self, struct grid_worker_fd *fd);
+void grid_worker_reset_out (struct grid_worker *self, struct grid_worker_fd *fd);
 
 #define GRID_WORKER_TIMER_TIMEOUT 1
 

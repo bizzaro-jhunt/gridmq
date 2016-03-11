@@ -23,12 +23,6 @@
 #ifndef GRID_FD_INCLUDED
 #define GRID_FD_INCLUDED
 
-#ifdef GRID_HAVE_WINDOWS
-#include "win.h"
-typedef SOCKET grid_fd;
-#else
 typedef int grid_fd;
-#endif
 
 #endif
-

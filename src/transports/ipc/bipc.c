@@ -35,13 +35,9 @@
 #include "../../utils/fast.h"
 
 #include <string.h>
-#if defined GRID_HAVE_WINDOWS
-#include "../../utils/win.h"
-#else
 #include <unistd.h>
 #include <sys/un.h>
 #include <fcntl.h>
-#endif
 
 #define GRID_BIPC_BACKLOG 10
 
@@ -383,9 +379,7 @@ static void grid_bipc_start_listening (struct grid_bipc *self)
     struct sockaddr_storage ss;
     struct sockaddr_un *un;
     const char *addr;
-#if !defined GRID_HAVE_WINDOWS
     int fd;
-#endif
 
     /*  First, create the AF_UNIX address. */
     addr = grid_epbase_getaddr (&self->epbase);
@@ -399,7 +393,6 @@ static void grid_bipc_start_listening (struct grid_bipc *self)
         the application. We'll check whether the file is still in use by
         connecting to the endpoint. On Windows plaform, NamedPipe is used
         which does not have an underlying file. */
-#if !defined GRID_HAVE_WINDOWS
     fd = socket (AF_UNIX, SOCK_STREAM, 0);
     if (fd >= 0) {
         rc = fcntl (fd, F_SETFL, O_NONBLOCK);
@@ -413,7 +406,6 @@ static void grid_bipc_start_listening (struct grid_bipc *self)
         rc = close (fd);
         errno_assert (rc == 0);
     }
-#endif
 
     /*  Start listening for incoming connections. */
     rc = grid_usock_start (&self->usock, AF_UNIX, SOCK_STREAM, 0);

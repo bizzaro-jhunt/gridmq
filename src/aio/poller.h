@@ -23,8 +23,6 @@
 #ifndef GRID_POLLER_INCLUDED
 #define GRID_POLLER_INCLUDED
 
-#if !defined GRID_HAVE_WINDOWS
-
 #define GRID_POLLER_IN 1
 #define GRID_POLLER_OUT 2
 #define GRID_POLLER_ERR 3
@@ -50,7 +48,6 @@ int grid_poller_wait (struct grid_poller *self, int timeout);
 int grid_poller_event (struct grid_poller *self, int *event,
     struct grid_poller_hndl **hndl);
 
-#endif
 
 #endif
 

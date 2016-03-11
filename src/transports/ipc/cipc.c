@@ -35,12 +35,8 @@
 #include "../../utils/attr.h"
 
 #include <string.h>
-#if defined GRID_HAVE_WINDOWS
-#include "../../utils/win.h"
-#else
 #include <unistd.h>
 #include <sys/un.h>
-#endif
 
 #define GRID_CIPC_STATE_IDLE 1
 #define GRID_CIPC_STATE_CONNECTING 2
@@ -415,14 +411,6 @@ static void grid_cipc_start_connecting (struct grid_cipc *self)
     grid_assert (strlen (addr) < sizeof (un->sun_path));
     ss.ss_family = AF_UNIX;
     strncpy (un->sun_path, addr, sizeof (un->sun_path));
-
-#if defined GRID_HAVE_WINDOWS
-    /* Get/Set security attribute pointer*/
-    grid_epbase_getopt (&self->epbase, GRID_IPC, GRID_IPC_SEC_ATTR, &self->usock.sec_attr, &sz);
-
-    grid_epbase_getopt (&self->epbase, GRID_IPC, GRID_IPC_OUTBUFSZ, &self->usock.outbuffersz, &sz);
-    grid_epbase_getopt (&self->epbase, GRID_IPC, GRID_IPC_INBUFSZ, &self->usock.inbuffersz, &sz);
-#endif
 
     /*  Start connecting. */
     grid_usock_connect (&self->usock, (struct sockaddr*) &ss,

@@ -23,19 +23,19 @@
 #ifndef GRID_THREAD_INCLUDED
 #define GRID_THREAD_INCLUDED
 
-/*  Platform independent implementation of threading. */
+#include <pthread.h>
 
+struct grid_thread
+{
+    grid_thread_routine *routine;
+    void *arg;
+    pthread_t handle;
+};
 typedef void (grid_thread_routine) (void*);
 
-#if defined GRID_HAVE_WINDOWS
-#include "thread_win.h"
-#else
-#include "thread_posix.h"
-#endif
 
 void grid_thread_init (struct grid_thread *self,
     grid_thread_routine *routine, void *arg);
 void grid_thread_term (struct grid_thread *self);
 
 #endif
-

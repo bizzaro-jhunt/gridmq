@@ -34,13 +34,9 @@
 #include "../../utils/cont.h"
 
 #include <string.h>
-#if defined GRID_HAVE_WINDOWS
-#include "../../utils/win.h"
-#else
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
-#endif
 
 /*  IPC-specific socket options. */
 struct grid_ipc_optset {

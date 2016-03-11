@@ -21,19 +21,6 @@
 */
 
 #include "../grid.h"
-
-#if defined GRID_HAVE_WINDOWS
-
-#include "../utils/err.h"
-
-int grid_tcpmuxd (int port)
-{
-    errno = EPROTONOSUPPORT;
-    return -1;
-}
-
-#else
-
 #include "../utils/thread.h"
 #include "../utils/attr.h"
 #include "../utils/err.h"
@@ -371,5 +358,3 @@ static int grid_tcpmuxd_send_fd (int s, int fd)
 
     return 0;
 }
-
-#endif

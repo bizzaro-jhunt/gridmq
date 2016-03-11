@@ -22,14 +22,10 @@
 
 #include "poller.h"
 
-#if !defined GRID_HAVE_WINDOWS
-
 #if defined GRID_USE_POLL
 #include "poller_poll.inc"
 #elif defined GRID_USE_EPOLL
 #include "poller_epoll.inc"
 #elif defined GRID_USE_KQUEUE
 #include "poller_kqueue.inc"
-#endif
-
 #endif

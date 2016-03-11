@@ -22,18 +22,6 @@
 
 #include "sleep.h"
 #include "err.h"
-
-#ifdef GRID_HAVE_WINDOWS
-
-#include "win.h"
-
-void grid_sleep (int milliseconds)
-{
-    Sleep (milliseconds);
-}
-
-#else
-
 #include <time.h>
 
 void grid_sleep (int milliseconds)
@@ -46,5 +34,3 @@ void grid_sleep (int milliseconds)
     rc = nanosleep (&ts, NULL);
     errno_assert (rc == 0);    
 }
-
-#endif

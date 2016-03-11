@@ -69,8 +69,6 @@ int main ()
     test_close (pull);
     test_close (pair);
 
-#if !defined GRID_HAVE_WINDOWS
-
     /*  IPC */
     pair = test_socket (AF_SP, GRID_PAIR);
     test_bind (pair, SOCKET_ADDRESS_IPC);
@@ -83,8 +81,6 @@ int main ()
     errno_assert (rc < 0 && grid_errno () == ETIMEDOUT);
     test_close (pull);
     test_close (pair);
-
-#endif
 
     /*  TCP */
     pair = test_socket (AF_SP, GRID_PAIR);

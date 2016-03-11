@@ -39,13 +39,8 @@
 #include "../../utils/int.h"
 
 #include <string.h>
-
-#if defined GRID_HAVE_WINDOWS
-#include "../../utils/win.h"
-#else
 #include <unistd.h>
 #include <netinet/in.h>
-#endif
 
 /*  The backlog is set relatively high so that there are not too many failed
     connection attemps during re-connection storms. */

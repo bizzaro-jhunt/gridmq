@@ -23,12 +23,7 @@
 #include <netdb.h>
 
 #include "../../grid.h"
-
-#if defined GRID_HAVE_WINDOWS
-#include "../../utils/win.h"
-#else
 #include <sys/socket.h>
-#endif
 
 struct grid_dns {
     struct grid_fsm fsm;

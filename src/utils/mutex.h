@@ -23,18 +23,10 @@
 #ifndef GRID_MUTEX_INCLUDED
 #define GRID_MUTEX_INCLUDED
 
-#ifdef GRID_HAVE_WINDOWS
-#include "win.h"
-#else
 #include <pthread.h>
-#endif
 
 struct grid_mutex {
-#ifdef GRID_HAVE_WINDOWS
-    CRITICAL_SECTION mutex;
-#else
     pthread_mutex_t mutex;
-#endif
 };
 
 /*  Initialise the mutex. */
@@ -51,4 +43,3 @@ void grid_mutex_lock (struct grid_mutex *self);
 void grid_mutex_unlock (struct grid_mutex *self);
 
 #endif
-

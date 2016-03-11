@@ -21,31 +21,6 @@
 */
 
 #include "stopwatch.h"
-
-#if defined GRID_HAVE_WINDOWS
-
-#include "win.h"
-
-void grid_stopwatch_init (struct grid_stopwatch *self)
-{
-    LARGE_INTEGER time;
-
-    QueryPerformanceCounter (&time);
-    self->start = (uint64_t) (time.QuadPart);
-}
-
-uint64_t grid_stopwatch_term (struct grid_stopwatch *self)
-{
-    LARGE_INTEGER tps;
-    LARGE_INTEGER time;
-
-    QueryPerformanceFrequency (&tps);
-    QueryPerformanceCounter (&time);
-    return (uint64_t) ((time.QuadPart - self->start) * 1000000 / tps.QuadPart);
-}
-
-#else
-
 #include <stdlib.h>
 #include <assert.h>
 #include <sys/time.h>
@@ -71,5 +46,3 @@ uint64_t grid_stopwatch_term (struct grid_stopwatch *self)
     end = (uint64_t) (((uint64_t) tv.tv_sec) * 1000000 + tv.tv_usec);
     return end - self->start;
 }
-
-#endif

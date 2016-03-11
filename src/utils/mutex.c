@@ -23,30 +23,6 @@
 #include "mutex.h"
 #include "err.h"
 
-#ifdef GRID_HAVE_WINDOWS
-
-void grid_mutex_init (struct grid_mutex *self)
-{
-    InitializeCriticalSection (&self->mutex);
-}
-
-void grid_mutex_term (struct grid_mutex *self)
-{
-    DeleteCriticalSection (&self->mutex);
-}
-
-void grid_mutex_lock (struct grid_mutex *self)
-{
-    EnterCriticalSection (&self->mutex);
-}
-
-void grid_mutex_unlock (struct grid_mutex *self)
-{
-    LeaveCriticalSection (&self->mutex);
-}
-
-#else
-
 void grid_mutex_init (struct grid_mutex *self)
 {
     int rc;
@@ -78,6 +54,3 @@ void grid_mutex_unlock (struct grid_mutex *self)
     rc = pthread_mutex_unlock (&self->mutex);
     errnum_assert (rc == 0, rc);
 }
-
-#endif
-
