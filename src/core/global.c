@@ -47,7 +47,6 @@
 #include "../transports/inproc/inproc.h"
 #include "../transports/ipc/ipc.h"
 #include "../transports/tcp/tcp.h"
-#include "../transports/tcpmux/tcpmux.h"
 
 #include "../protocols/pair/pair.h"
 #include "../protocols/pair/xpair.h"
@@ -233,7 +232,6 @@ static void grid_global_init (void)
     grid_global_add_transport (grid_inproc);
     grid_global_add_transport (grid_ipc);
     grid_global_add_transport (grid_tcp);
-    grid_global_add_transport (grid_tcpmux);
 
     /*  Plug in individual socktypes. */
     grid_global_add_socktype (grid_pair_socktype);

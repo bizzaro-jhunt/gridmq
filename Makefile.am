@@ -39,8 +39,7 @@ nninclude_HEADERS = \
     src/reqrep.h \
     src/pipeline.h \
     src/survey.h \
-    src/bus.h \
-    src/tcpmux.h
+    src/bus.h
 
 lib_LTLIBRARIES = libgridmq.la
 
@@ -59,8 +58,7 @@ NANOMSG_CORE = \
 
 NANOMSG_DEVICES =\
     src/devices/device.c \
-    src/devices/device.h \
-    src/devices/tcpmuxd.c
+    src/devices/device.h
 
 NANOMSG_AIO = \
     src/aio/ctx.h \
@@ -280,24 +278,11 @@ TRANSPORTS_TCP = \
     src/transports/tcp/tcp.h \
     src/transports/tcp/tcp.c
 
-TRANSPORTS_TCPMUX = \
-    src/transports/tcpmux/atcpmux.h \
-    src/transports/tcpmux/atcpmux.c \
-    src/transports/tcpmux/btcpmux.h \
-    src/transports/tcpmux/btcpmux.c \
-    src/transports/tcpmux/ctcpmux.h \
-    src/transports/tcpmux/ctcpmux.c \
-    src/transports/tcpmux/stcpmux.h \
-    src/transports/tcpmux/stcpmux.c \
-    src/transports/tcpmux/tcpmux.h \
-    src/transports/tcpmux/tcpmux.c
-
 NANOMSG_TRANSPORTS = \
     $(TRANSPORTS_UTILS) \
     $(TRANSPORTS_INPROC) \
     $(TRANSPORTS_IPC) \
-    $(TRANSPORTS_TCP) \
-    $(TRANSPORTS_TCPMUX)
+    $(TRANSPORTS_TCP)
 
 libgridmq_la_SOURCES = \
     src/transport.h \
@@ -332,7 +317,6 @@ MAN7 = \
     doc/grid_inproc.txt \
     doc/grid_ipc.txt \
     doc/grid_tcp.txt \
-    doc/grid_tcpmux.txt \
     doc/grid_env.txt
 
 MAN3 = \
@@ -360,8 +344,7 @@ MAN3 = \
     doc/grid_poll.txt
 
 MAN1 = \
-    doc/gridcat.txt \
-    doc/tcpmuxd.txt
+    doc/gridcat.txt
 
 if DOC
 
@@ -432,8 +415,7 @@ TRANSPORT_TESTS = \
     tests/ipc_shutdown \
     tests/ipc_stress \
     tests/tcp \
-    tests/tcp_shutdown \
-    tests/tcpmux
+    tests/tcp_shutdown
 
 PROTOCOL_TESTS = \
     tests/pair \
@@ -493,13 +475,6 @@ gridcat_SOURCES = \
 if NANOCAT
 bin_PROGRAMS += gridcat
 endif #NANOCAT
-
-tcpmuxd_SOURCES = \
-	tools/tcpmuxd.c
-
-if TCPMUXD
-bin_PROGRAMS += tcpmuxd
-endif #TCPMUXD
 
 
 ################################################################################
