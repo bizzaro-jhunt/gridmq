@@ -25,13 +25,14 @@
 
 #include <pthread.h>
 
+typedef void (grid_thread_routine) (void*);
+
 struct grid_thread
 {
     grid_thread_routine *routine;
     void *arg;
     pthread_t handle;
 };
-typedef void (grid_thread_routine) (void*);
 
 
 void grid_thread_init (struct grid_thread *self,

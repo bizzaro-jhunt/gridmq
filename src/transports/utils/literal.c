@@ -26,7 +26,8 @@
 #include "../../utils/fast.h"
 
 #include <string.h>
-
+#include <arpa/inet.h>
+#include <netinet/in.h>
 
 static int grid_inet_pton(int family, const char *src, void *dst)
 {
