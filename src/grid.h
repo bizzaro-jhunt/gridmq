@@ -36,22 +36,14 @@ extern "C" {
 #if defined GRID_NO_EXPORTS
 #   define GRID_EXPORT
 #else
-#   if defined _WIN32
-#      if defined GRID_EXPORTS
-#          define GRID_EXPORT __declspec(dllexport)
-#      else
-#          define GRID_EXPORT __declspec(dllimport)
-#      endif
-#   else
-#      if defined __SUNPRO_C
-#          define GRID_EXPORT __global
-#      elif (defined __GNUC__ && __GNUC__ >= 4) || \
-             defined __INTEL_COMPILER || defined __clang__
-#          define GRID_EXPORT __attribute__ ((visibility("default")))
-#      else
-#          define GRID_EXPORT
-#      endif
-#   endif
+#    if defined __SUNPRO_C
+#        define GRID_EXPORT __global
+#    elif (defined __GNUC__ && __GNUC__ >= 4) || \
+           defined __INTEL_COMPILER || defined __clang__
+#        define GRID_EXPORT __attribute__ ((visibility("default")))
+#    else
+#        define GRID_EXPORT
+#    endif
 #endif
 
 /******************************************************************************/

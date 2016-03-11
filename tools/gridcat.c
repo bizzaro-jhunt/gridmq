@@ -38,9 +38,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <ctype.h>
-#if !defined GRID_HAVE_WINDOWS
 #include <unistd.h>
-#endif
 
 enum echo_format {
     GRID_NO_ECHO,

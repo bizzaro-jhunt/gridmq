@@ -49,14 +49,6 @@ struct grid_sem {
     int signaled;
 };
 
-#elif defined GRID_HAVE_WINDOWS
-
-#include "win.h"
-
-struct grid_sem {
-    HANDLE h;
-};
-
 #elif defined GRID_HAVE_SEMAPHORE
 
 #include <semaphore.h>

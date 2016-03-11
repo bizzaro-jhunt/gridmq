@@ -30,9 +30,7 @@
 
 #include <string.h>
 
-#if defined GRID_HAVE_WINDOWS
-#include "../utils/win.h"
-#elif defined GRID_HAVE_POLL
+#if defined GRID_HAVE_POLL
 #include <poll.h>
 #else
 #error
@@ -210,74 +208,7 @@ int grid_device_loopback (struct grid_device_recipe *device, int s)
     }
 }
 
-#if defined GRID_HAVE_WINDOWS
-
-int grid_device_twoway (struct grid_device_recipe *device,
-    int s1, grid_fd s1rcv, grid_fd s1snd,
-    int s2, grid_fd s2rcv, grid_fd s2snd)
-{
-    int rc;
-    fd_set fds;
-    int s1rcv_isready = 0;
-    int s1snd_isready = 0;
-    int s2rcv_isready = 0;
-    int s2snd_isready = 0;
-
-    /*  Initialise the pollset. */
-    FD_ZERO (&fds);
-
-    while (1) {
-
-        /*  Wait for network events. Adjust the 'ready' events based
-            on the result. */
-        if (s1rcv_isready)
-            FD_CLR (s1rcv, &fds);
-        else
-            FD_SET (s1rcv, &fds);
-        if (s1snd_isready)
-            FD_CLR (s1snd, &fds);
-        else
-            FD_SET (s1snd, &fds);
-        if (s2rcv_isready)
-            FD_CLR (s2rcv, &fds);
-        else
-            FD_SET (s2rcv, &fds);
-        if (s2snd_isready)
-            FD_CLR (s2snd, &fds);
-        else
-            FD_SET (s2snd, &fds);
-        rc = select (0, &fds, NULL, NULL, NULL);
-        wsa_assert (rc != SOCKET_ERROR);
-        if (FD_ISSET (s1rcv, &fds))
-            s1rcv_isready = 1;
-        if (FD_ISSET (s1snd, &fds))
-            s1snd_isready = 1;
-        if (FD_ISSET (s2rcv, &fds))
-            s2rcv_isready = 1;
-        if (FD_ISSET (s2snd, &fds))
-            s2snd_isready = 1;
-
-        /*  If possible, pass the message from s1 to s2. */
-        if (s1rcv_isready && s2snd_isready) {
-            rc = grid_device_mvmsg (device,s1, s2, GRID_DONTWAIT);
-            if (grid_slow (rc < 0))
-                return -1;
-            s1rcv_isready = 0;
-            s2snd_isready = 0;
-        }
-
-        /*  If possible, pass the message from s2 to s1. */
-        if (s2rcv_isready && s1snd_isready) {
-            rc = grid_device_mvmsg (device,s2, s1, GRID_DONTWAIT);
-            if (grid_slow (rc < 0))
-                return -1;
-            s2rcv_isready = 0;
-            s1snd_isready = 0;
-        }
-    }
-}
-
-#elif defined GRID_HAVE_POLL
+#if defined GRID_HAVE_POLL
 
 int grid_device_twoway (struct grid_device_recipe *device,
     int s1, grid_fd s1rcv, grid_fd s1snd,

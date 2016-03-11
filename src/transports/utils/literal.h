@@ -23,12 +23,7 @@
 #ifndef GRID_LITERAL_INCLUDED
 #define GRID_LITERAL_INCLUDED
 
-#if defined GRID_HAVE_WINDOWS
-#include "../../utils/win.h"
-#else
 #include <sys/socket.h>
-#endif
-
 #include <stddef.h>
 
 /*  Resolves a literal IPv4 or IPv6 address. */

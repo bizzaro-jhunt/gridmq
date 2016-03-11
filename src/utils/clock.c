@@ -21,9 +21,7 @@
     IN THE SOFTWARE.
 */
 
-#if defined GRID_HAVE_WINDOWS
-#include "win.h"
-#elif defined GRID_HAVE_OSX
+#if defined GRID_HAVE_OSX
 #include <mach/mach_time.h>
 #elif defined GRID_HAVE_CLOCK_MONOTONIC || defined GRID_HAVE_GETHRTIME
 #include <time.h>
@@ -46,9 +44,7 @@ static mach_timebase_info_data_t grid_clock_timebase_info;
 
 static uint64_t grid_clock_rdtsc ()
 {
-#if (defined _MSC_VER && (defined _M_IX86 || defined _M_X64))
-    return __rdtsc ();
-#elif (defined __GNUC__ && (defined __i386__ || defined __x86_64__))
+#if (defined __GNUC__ && (defined __i386__ || defined __x86_64__))
     uint32_t low;
     uint32_t high;
     __asm__ volatile ("rdtsc" : "=a" (low), "=d" (high));
@@ -70,18 +66,7 @@ static uint64_t grid_clock_rdtsc ()
 
 static uint64_t grid_clock_time ()
 {
-#if defined GRID_HAVE_WINDOWS
-
-    LARGE_INTEGER tps;
-    LARGE_INTEGER time;
-    double tpms;
-
-    QueryPerformanceFrequency (&tps);
-    QueryPerformanceCounter (&time);
-    tpms = (double) (tps.QuadPart / 1000);
-    return (uint64_t) (time.QuadPart / tpms);
-
-#elif defined GRID_HAVE_OSX
+#if defined GRID_HAVE_OSX
 
     uint64_t ticks;
 

@@ -23,13 +23,9 @@
 #include "../../utils/err.h"
 #include "../../utils/wire.h"
 
-#if defined GRID_HAVE_WINDOWS
-#include "../../utils/win.h"
-#else
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#endif
 
 #include "tcpmux.h"
 

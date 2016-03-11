@@ -433,17 +433,12 @@ static void grid_process_option (struct grid_parse_context *ctx,
             blob->need_free = 0;
             return;
         case GRID_OPT_FLOAT:
-#if defined GRID_HAVE_WINDOWS
-            *(float *)(((char *)ctx->target) + opt->offset) =
-                (float) atof (argument);
-#else
             *(float *)(((char *)ctx->target) + opt->offset) =
                 strtof (argument, &endptr);
             if (endptr == argument || *endptr != 0) {
                 grid_option_error ("requires float point argument",
                                 ctx, opt_index);
             }
-#endif
             return;
         case GRID_OPT_LIST_APPEND:
             grid_append_string (ctx, opt, argument);
@@ -451,12 +446,7 @@ static void grid_process_option (struct grid_parse_context *ctx,
         case GRID_OPT_LIST_APPEND_FMT:
             data_buf = strlen (argument) + strlen (opt->pointer);
             data = malloc (data_buf);
-#if defined GRID_HAVE_WINDOWS
-            data_len = _snprintf_s (data, data_buf, _TRUNCATE, opt->pointer,
-                argument);
-#else
             data_len = snprintf (data, data_buf, opt->pointer, argument);
-#endif
             assert (data_len < data_buf);
             grid_append_string (ctx, opt, data);
             grid_append_string_to_free (ctx, opt, data);
@@ -499,15 +489,8 @@ static void grid_process_option (struct grid_parse_context *ctx,
                 assert (data);
             }
             if (ferror (file)) {
-#if defined _MSC_VER
-#pragma warning (push)
-#pragma warning (disable:4996)
-#endif
                 fprintf (stderr, "Error reading file ``%s'': %s\n",
                     argument, strerror (errno));
-#if defined _MSC_VER
-#pragma warning (pop)
-#endif
                 exit (2);
             }
             if (file != stdin) {

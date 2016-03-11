@@ -32,9 +32,7 @@
 
 #include "fast.h"
 
-#if defined _MSC_VER
-#define GRID_NORETURN __declspec(noreturn)
-#elif defined __GNUC__
+#if defined __GNUC__
 #define GRID_NORETURN __attribute__ ((noreturn))
 #else
 #define GRID_NORETURN
@@ -154,10 +152,5 @@ GRID_NORETURN void grid_err_abort (void);
 int grid_err_errno (void);
 const char *grid_err_strerror (int errnum);
 
-#ifdef GRID_HAVE_WINDOWS
-int grid_err_wsa_to_posix (int wsaerr);
-void grid_win_error (int err, char *buf, size_t bufsize);
-#endif
 
 #endif
-

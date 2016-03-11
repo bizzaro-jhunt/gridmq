@@ -25,16 +25,6 @@ Build it
 9.  On Linux or other platforms which use ld.so for dynamic linking, run 
     ldconfig or equivalent as root to update your system’s shared library cache.
 
-Build it on Windows
--------------------
-
-1.  Download the package.
-2.  Unpack it.
-3.  Go to the root directory of the package.
-4.  run "cmake ."
-5.  Open the gridmq.sln file using MSVC IDE.
-6.  Build the entire solution.
-7.  Optionally, build RUN_TESTS project to run the test suite.
 
 Resources
 ---------

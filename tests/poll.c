@@ -28,11 +28,7 @@
 #include "../src/utils/attr.h"
 #include "../src/utils/thread.c"
 
-#if defined GRID_HAVE_WINDOWS
-#include "../src/utils/win.h"
-#else
 #include <sys/select.h>
-#endif
 
 /*  Test of polling via GRID_SNDFD/GRID_RCVFD mechanism. */
 
@@ -59,21 +55,14 @@ int getevents (int s, int events, int timeout)
 {
     int rc;
     fd_set pollset;
-#if defined GRID_HAVE_WINDOWS
-    SOCKET rcvfd;
-    SOCKET sndfd;
-#else
     int rcvfd;
     int sndfd;
     int maxfd;
-#endif
     size_t fdsz;
     struct timeval tv;
     int revents;
 
-#if !defined GRID_HAVE_WINDOWS
     maxfd = 0;
-#endif
     FD_ZERO (&pollset);
 
     if (events & GRID_IN) {
@@ -82,10 +71,8 @@ int getevents (int s, int events, int timeout)
         errno_assert (rc == 0);
         grid_assert (fdsz == sizeof (rcvfd));
         FD_SET (rcvfd, &pollset);
-#if !defined GRID_HAVE_WINDOWS
         if (rcvfd + 1 > maxfd)
             maxfd = rcvfd + 1;
-#endif
     }
 
     if (events & GRID_OUT) {
@@ -94,23 +81,17 @@ int getevents (int s, int events, int timeout)
         errno_assert (rc == 0);
         grid_assert (fdsz == sizeof (sndfd));
         FD_SET (sndfd, &pollset);
-#if !defined GRID_HAVE_WINDOWS
         if (sndfd + 1 > maxfd)
             maxfd = sndfd + 1;
-#endif
     }
 
     if (timeout >= 0) {
         tv.tv_sec = timeout / 1000;
         tv.tv_usec = (timeout % 1000) * 1000;
     }
-#if defined GRID_HAVE_WINDOWS
-    rc = select (0, &pollset, NULL, NULL, timeout < 0 ? NULL : &tv);
-    wsa_assert (rc != SOCKET_ERROR);
-#else
     rc = select (maxfd, &pollset, NULL, NULL, timeout < 0 ? NULL : &tv);
     errno_assert (rc >= 0);
-#endif
+
     revents = 0;
     if ((events & GRID_IN) && FD_ISSET (rcvfd, &pollset))
         revents |= GRID_IN;

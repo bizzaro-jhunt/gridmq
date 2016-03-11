@@ -23,12 +23,7 @@
 #ifndef GRID_IFACE_INCLUDED
 #define GRID_IFACE_INCLUDED
 
-#if defined GRID_HAVE_WINDOWS
-#include "../../utils/win.h"
-#else
 #include <sys/socket.h>
-#endif
-
 #include <stddef.h>
 
 /*  Resolves name of a local network interface into the address itself.

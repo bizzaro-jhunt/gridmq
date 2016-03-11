@@ -37,12 +37,7 @@
 #include "../../utils/cont.h"
 
 #include <string.h>
-
-#if defined GRID_HAVE_WINDOWS
-#include "../../utils/win.h"
-#else
 #include <unistd.h>
-#endif
 
 /*  TCPMUX-specific socket options. */
 
@@ -82,11 +77,7 @@ struct grid_transport *grid_tcpmux = &grid_tcpmux_vfptr;
 
 static int grid_tcpmux_bind (void *hint, struct grid_epbase **epbase)
 {
-#if defined GRID_HAVE_WINDOWS
-    return -EPROTONOSUPPORT;
-#else
     return grid_btcpmux_create (hint, epbase);
-#endif
 }
 
 static int grid_tcpmux_connect (void *hint, struct grid_epbase **epbase)

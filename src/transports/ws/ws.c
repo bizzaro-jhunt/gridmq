@@ -40,12 +40,7 @@
 #include "../../utils/cont.h"
 
 #include <string.h>
-
-#if defined GRID_HAVE_WINDOWS
-#include "../../utils/win.h"
-#else
 #include <unistd.h>
-#endif
 
 /*  WebSocket-specific socket options. */
 struct grid_ws_optset {

@@ -44,14 +44,9 @@
 #include "../../utils/attr.h"
 
 #include <string.h>
-
-#if defined GRID_HAVE_WINDOWS
-#include "../../utils/win.h"
-#else
 #include <unistd.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
-#endif
 
 #define GRID_CWS_STATE_IDLE 1
 #define GRID_CWS_STATE_RESOLVING 2

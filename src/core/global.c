@@ -78,20 +78,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
-#if defined GRID_HAVE_MINGW
-#include <pthread.h>
-#elif defined GRID_HAVE_WINDOWS
-#define gmtime_r(ptr_numtime, ptr_strtime) gmtime_s(ptr_strtime, ptr_numtime)
-#endif
 #define GRID_HAVE_GMTIME_R
 
-
-#if defined GRID_HAVE_WINDOWS
-#include "../utils/win.h"
-#else
-#include <unistd.h>
-#endif
 
 /*  Max number of concurrent SP sockets. */
 #define GRID_MAX_SOCKETS 512
@@ -201,21 +191,10 @@ static void grid_global_init (void)
     int rc;
     char *addr;
 
-#if defined GRID_HAVE_WINDOWS
-    WSADATA data;
-#endif
 
     /*  Check whether the library was already initialised. If so, do nothing. */
     if (self.socks)
         return;
-
-    /*  On Windows, initialise the socket library. */
-#if defined GRID_HAVE_WINDOWS
-    rc = WSAStartup (MAKEWORD (2, 2), &data);
-    grid_assert (rc == 0);
-    grid_assert (LOBYTE (data.wVersion) == 2 &&
-        HIBYTE (data.wVersion) == 2);
-#endif
 
     /*  Initialise the memory allocation subsystem. */
     grid_alloc_init ();
@@ -312,14 +291,7 @@ static void grid_global_init (void)
             Also, MSVC suggests using _getpid() instead of getpid(),
             however, it's not clear whether the former is supported
             by older versions of Windows/MSVC. */
-#if defined _MSC_VER
-#pragma warning (push)
-#pragma warning (disable:4996)
-#endif
         sprintf (self.appname, "gridmq.%d", getpid());
-#if defined _MSC_VER
-#pragma warning (pop)
-#endif
     }
 
     addr = getenv ("GRID_HOSTNAME");
@@ -337,9 +309,6 @@ static void grid_global_init (void)
 
 static void grid_global_term (void)
 {
-#if defined GRID_HAVE_WINDOWS
-    int rc;
-#endif
     struct grid_list_item *it;
     struct grid_transport *tp;
 
@@ -385,10 +354,6 @@ static void grid_global_term (void)
     grid_alloc_term ();
 
     /*  On Windows, uninitialise the socket library. */
-#if defined GRID_HAVE_WINDOWS
-    rc = WSACleanup ();
-    grid_assert (rc == 0);
-#endif
 }
 
 void grid_term (void)
@@ -1181,15 +1146,9 @@ static void grid_global_submit_errors (int i, struct grid_sock *s,
             ep = grid_cont (it, struct grid_ep, item);
 
             if (ep->last_errno) {
-#ifdef GRID_HAVE_WINDOWS
-                len = _snprintf_s (curbuf, buf_left, _TRUNCATE,
-                    " gridmq: Endpoint %d [%s] error: %s\n",
-                    ep->eid, grid_ep_getaddr (ep), grid_strerror (ep->last_errno));
-#else
                  len = snprintf (curbuf, buf_left,
                      " gridmq: Endpoint %d [%s] error: %s\n",
                      ep->eid, grid_ep_getaddr (ep), grid_strerror (ep->last_errno));
-#endif
                 if (buf_left < len)
                     break;
                 curbuf += len;

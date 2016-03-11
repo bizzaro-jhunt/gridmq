@@ -23,11 +23,6 @@
 #ifndef GRID_CLOSEFD_INCLUDED
 #define GRID_CLOSEFD_INCLUDED
 
-#if !defined GRID_HAVE_WINDOWS
-
 void grid_closefd (int fd);
 
 #endif
-
-#endif
-

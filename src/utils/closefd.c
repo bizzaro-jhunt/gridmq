@@ -21,8 +21,6 @@
     IN THE SOFTWARE.
 */
 
-#if !defined GRID_HAVE_WINDOWS
-
 #include "closefd.h"
 #include "fast.h"
 #include "err.h"
@@ -41,6 +39,3 @@ void grid_closefd (int fd)
     errno_assert (errno == EINTR || errno == ETIMEDOUT ||
         errno == EWOULDBLOCK || errno == EINPROGRESS || errno == ECONNRESET);
 }
-
-#endif
-

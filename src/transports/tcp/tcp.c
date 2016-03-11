@@ -37,12 +37,7 @@
 #include "../../utils/cont.h"
 
 #include <string.h>
-
-#if defined GRID_HAVE_WINDOWS
-#include "../../utils/win.h"
-#else
 #include <unistd.h>
-#endif
 
 /*  TCP-specific socket options. */
 

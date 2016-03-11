@@ -225,12 +225,6 @@ AM_CONDITIONAL([TCPMUXD], [test x"$enable_tcpmuxd" != "xno" ])
 
 AS_CASE([${host_os}],
     [*linux*],   [AC_DEFINE([GRID_HAVE_LINUX])],
-    [*mingw32*], [
-        AC_DEFINE([GRID_HAVE_WINDOWS])
-        AC_DEFINE([GRID_HAVE_MINGW])
-        AC_DEFINE([_WIN32_WINNT],0x0600)
-        LIBS="$LIBS -lws2_32 -lMswsock"
-    ],
     [*darwin*],  [AC_DEFINE([GRID_HAVE_OSX])],
     [*freebsd*], [AC_DEFINE([GRID_HAVE_FREEBSD])],
     [*netbsd*],  [AC_DEFINE([GRID_HAVE_NETBSD])],

@@ -23,9 +23,7 @@
 
 #include "efd.h"
 
-#if defined GRID_HAVE_WINDOWS
-#include "efd_win.inc"
-#elif defined GRID_HAVE_EVENTFD
+#if defined GRID_HAVE_EVENTFD
 #include "efd_eventfd.inc"
 #elif defined GRID_HAVE_PIPE
 #include "efd_pipe.inc"
@@ -52,42 +50,6 @@ int grid_efd_wait (struct grid_efd *self, int timeout)
     if (grid_slow (rc < 0 && errno == EINTR))
         return -EINTR;
     errno_assert (rc >= 0);
-    if (grid_slow (rc == 0))
-        return -ETIMEDOUT;
-    return 0;
-}
-
-#elif defined GRID_HAVE_WINDOWS
-
-int grid_efd_wait (struct grid_efd *self, int timeout)
-{
-    int rc;
-    struct timeval tv;
-    int fd = self->r;
-
-    if (grid_slow (fd < 0)) {
-        return -EBADF;
-    }
-    FD_SET (fd, &self->fds);
-    if (timeout >= 0) {
-        tv.tv_sec = timeout / 1000;
-        tv.tv_usec = timeout % 1000 * 1000;
-    }
-    rc = select (0, &self->fds, NULL, NULL, timeout >= 0 ? &tv : NULL);
-
-    if (grid_slow (rc == SOCKET_ERROR)) {
-        rc = grid_err_wsa_to_posix (WSAGetLastError ());
-        errno = rc;
-        
-        /*  Treat these as a non-fatal errors, typically occuring when the
-            socket is being closed from a separate thread during a blocking
-            I/O operation. */
-        if (grid_fast (rc == EINTR || rc == ENOTSOCK))
-            return -EINTR;
-    }
-
-    wsa_assert (rc >= 0);
-
     if (grid_slow (rc == 0))
         return -ETIMEDOUT;
     return 0;

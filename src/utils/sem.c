@@ -91,41 +91,6 @@ int grid_sem_wait (struct grid_sem *self)
     return 0;
 }
 
-#elif defined GRID_HAVE_WINDOWS
-
-void grid_sem_init (struct grid_sem *self)
-{
-    self->h = CreateEvent (NULL, FALSE, FALSE, NULL);
-    win_assert (self->h);
-}
-
-void grid_sem_term (struct grid_sem *self)
-{
-    BOOL brc;
-
-    brc = CloseHandle (self->h);
-    win_assert (brc);
-}
-
-void grid_sem_post (struct grid_sem *self)
-{
-    BOOL brc;
-
-    brc = SetEvent (self->h);
-    win_assert (brc);
-}
-
-int grid_sem_wait (struct grid_sem *self)
-{
-    DWORD rc;
-
-    rc = WaitForSingleObject (self->h, INFINITE);
-    win_assert (rc != WAIT_FAILED);
-    grid_assert (rc == WAIT_OBJECT_0);
-
-    return 0;
-}
-
 #elif defined GRID_HAVE_SEMAPHORE
 
 void grid_sem_init (struct grid_sem *self)

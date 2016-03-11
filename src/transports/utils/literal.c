@@ -27,50 +27,11 @@
 
 #include <string.h>
 
-#ifndef GRID_HAVE_WINDOWS
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#endif
-
-/*  On Windows XS there's no inet_pton() function. */
-#if defined GRID_HAVE_WINDOWS && ((_WIN32_WINNT <= 0x0501) || (WINVER <= 0x0501))
-
-static int grid_inet_pton(int family, const char *src, void *dst)
-{
-    int rc;
-    struct sockaddr_storage addr;
-    int addr_len = sizeof(addr);
-
-    if (grid_slow (family != AF_INET && family != AF_INET6)) {
-        errno = EAFNOSUPPORT;
-        return -1;
-    }
-
-    addr.ss_family = family;
-    rc = WSAStringToAddressA ((char*) src, family, NULL,
-        (struct sockaddr*) &addr, &addr_len);
-    if (rc != 0)
-        return 0;
-
-    if (family == AF_INET) {
-        memcpy(dst, &((struct sockaddr_in *) &addr)->sin_addr,
-            sizeof(struct in_addr));
-    } else if (family == AF_INET6) {
-        memcpy(dst, &((struct sockaddr_in6 *)&addr)->sin6_addr,
-            sizeof(struct in6_addr));
-    }
-
-    return 1;
-}
-
-#else
 
 static int grid_inet_pton(int family, const char *src, void *dst)
 {
     return inet_pton (family, src, dst);
 }
-
-#endif
 
 int grid_literal_resolve (const char *addr, size_t addrlen,
     int ipv4only, struct sockaddr_storage *result, size_t *resultlen)
