@@ -21,5 +21,5 @@
 #   IN THE SOFTWARE.
 #
 
-autoreconf -ifv
+autoreconf --force --install
 

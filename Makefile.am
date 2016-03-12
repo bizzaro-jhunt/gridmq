@@ -18,7 +18,7 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I build
 
 DISTCLEANFILES = @DOLT_CLEANFILES@
 
@@ -43,7 +43,7 @@ nninclude_HEADERS = \
 
 lib_LTLIBRARIES = libgridmq.la
 
-NANOMSG_CORE = \
+GRIDMQ_CORE = \
     src/core/ep.h \
     src/core/ep.c \
     src/core/epbase.c \
@@ -56,11 +56,11 @@ NANOMSG_CORE = \
     src/core/sockbase.c \
     src/core/symbol.c
 
-NANOMSG_DEVICES =\
+GRIDMQ_DEVICES =\
     src/devices/device.c \
     src/devices/device.h
 
-NANOMSG_AIO = \
+GRIDMQ_AIO = \
     src/aio/ctx.h \
     src/aio/ctx.c \
     src/aio/fsm.h \
@@ -88,7 +88,7 @@ NANOMSG_AIO = \
     src/aio/worker_posix.h \
     src/aio/worker_posix.inc
 
-NANOMSG_UTILS = \
+GRIDMQ_UTILS = \
     src/utils/alloc.h \
     src/utils/alloc.c \
     src/utils/atomic.h \
@@ -211,7 +211,7 @@ PROTOCOLS_SURVEY = \
     src/protocols/survey/xsurveyor.h \
     src/protocols/survey/xsurveyor.c
 
-NANOMSG_PROTOCOLS = \
+GRIDMQ_PROTOCOLS = \
     $(PROTOCOLS_BUS) \
     $(PROTOCOLS_PIPELINE) \
     $(PROTOCOLS_PAIR) \
@@ -278,7 +278,7 @@ TRANSPORTS_TCP = \
     src/transports/tcp/tcp.h \
     src/transports/tcp/tcp.c
 
-NANOMSG_TRANSPORTS = \
+GRIDMQ_TRANSPORTS = \
     $(TRANSPORTS_UTILS) \
     $(TRANSPORTS_INPROC) \
     $(TRANSPORTS_IPC) \
@@ -287,15 +287,15 @@ NANOMSG_TRANSPORTS = \
 libgridmq_la_SOURCES = \
     src/transport.h \
     src/protocol.h \
-    $(NANOMSG_CORE) \
-    $(NANOMSG_AIO) \
-    $(NANOMSG_UTILS) \
-    $(NANOMSG_PROTOCOLS) \
-    $(NANOMSG_TRANSPORTS) \
-    $(NANOMSG_DEVICES)
+    $(GRIDMQ_CORE) \
+    $(GRIDMQ_AIO) \
+    $(GRIDMQ_UTILS) \
+    $(GRIDMQ_PROTOCOLS) \
+    $(GRIDMQ_TRANSPORTS) \
+    $(GRIDMQ_DEVICES)
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libgridmq.pc
+pkgconfig_DATA = src/gridmq.pc
 
 libgridmq_la_LDFLAGS = -no-undefined -version-info @GRID_LIBTOOL_VERSION@
 libgridmq_la_CFLAGS = -DGRID_EXPORTS
@@ -307,44 +307,44 @@ libgridmq_la_CFLAGS = -DGRID_EXPORTS
 #  Source files.
 
 MAN7 = \
-    doc/gridmq.txt \
-    doc/grid_pair.txt \
-    doc/grid_reqrep.txt \
-    doc/grid_pubsub.txt \
-    doc/grid_survey.txt \
-    doc/grid_pipeline.txt \
-    doc/grid_bus.txt \
-    doc/grid_inproc.txt \
-    doc/grid_ipc.txt \
-    doc/grid_tcp.txt \
-    doc/grid_env.txt
+    man/gridmq.txt \
+    man/grid_pair.txt \
+    man/grid_reqrep.txt \
+    man/grid_pubsub.txt \
+    man/grid_survey.txt \
+    man/grid_pipeline.txt \
+    man/grid_bus.txt \
+    man/grid_inproc.txt \
+    man/grid_ipc.txt \
+    man/grid_tcp.txt \
+    man/grid_env.txt
 
 MAN3 = \
-    doc/grid_errno.txt \
-    doc/grid_strerror.txt \
-    doc/grid_symbol.txt \
-    doc/grid_symbol_info.txt \
-    doc/grid_term.txt \
-    doc/grid_allocmsg.txt \
-    doc/grid_reallocmsg.txt \
-    doc/grid_freemsg.txt \
-    doc/grid_socket.txt \
-    doc/grid_close.txt \
-    doc/grid_getsockopt.txt \
-    doc/grid_setsockopt.txt \
-    doc/grid_bind.txt \
-    doc/grid_connect.txt \
-    doc/grid_shutdown.txt \
-    doc/grid_send.txt \
-    doc/grid_recv.txt \
-    doc/grid_sendmsg.txt \
-    doc/grid_recvmsg.txt \
-    doc/grid_device.txt \
-    doc/grid_cmsg.txt \
-    doc/grid_poll.txt
+    man/grid_errno.txt \
+    man/grid_strerror.txt \
+    man/grid_symbol.txt \
+    man/grid_symbol_info.txt \
+    man/grid_term.txt \
+    man/grid_allocmsg.txt \
+    man/grid_reallocmsg.txt \
+    man/grid_freemsg.txt \
+    man/grid_socket.txt \
+    man/grid_close.txt \
+    man/grid_getsockopt.txt \
+    man/grid_setsockopt.txt \
+    man/grid_bind.txt \
+    man/grid_connect.txt \
+    man/grid_shutdown.txt \
+    man/grid_send.txt \
+    man/grid_recv.txt \
+    man/grid_sendmsg.txt \
+    man/grid_recvmsg.txt \
+    man/grid_device.txt \
+    man/grid_cmsg.txt \
+    man/grid_poll.txt
 
 MAN1 = \
-    doc/gridcat.txt
+    man/gridcat.txt
 
 if DOC
 
@@ -352,33 +352,33 @@ if DOC
 
 .txt.xml:
 	$(AM_V_GEN)$(ASCIIDOC) -d manpage -b docbook \
-        -f $(abs_srcdir)/doc/asciidoc.conf \
+        -f $(abs_srcdir)/man/asciidoc.conf \
         -aversion=@GRID_PACKAGE_VERSION@ -o $@ $<
 
 SUFFIXES = .1 .3 .7 .1.html .3.html .7.html
 .xml.1:
-	$(AM_V_GEN)$(XMLTO) -o doc man $<
+	$(AM_V_GEN)$(XMLTO) -o man man $<
 .xml.3:
-	$(AM_V_GEN)$(XMLTO) -o doc man $<
+	$(AM_V_GEN)$(XMLTO) -o man man $<
 .xml.7:
-	$(AM_V_GEN)$(XMLTO) -o doc man $<
+	$(AM_V_GEN)$(XMLTO) -o man man $<
 
 .txt.1.html:
 	$(AM_V_GEN)$(ASCIIDOC) -d manpage -b xhtml11 \
-        -a stylesheet=$(abs_srcdir)/doc/htmldoc.css \
-        -f $(abs_srcdir)/doc/asciidoc.conf \
+        -a stylesheet=$(abs_srcdir)/man/htmldoc.css \
+        -f $(abs_srcdir)/,am/asciidoc.conf \
         -aversion=@GRID_PACKAGE_VERSION@ -o $@ $<
 
 .txt.3.html:
 	$(AM_V_GEN)$(ASCIIDOC) -d manpage -b xhtml11 \
-        -a stylesheet=$(abs_srcdir)/doc/htmldoc.css \
-        -f $(abs_srcdir)/doc/asciidoc.conf \
+        -a stylesheet=$(abs_srcdir)/man/htmldoc.css \
+        -f $(abs_srcdir)/man/asciidoc.conf \
         -aversion=@GRID_PACKAGE_VERSION@ -o $@ $<
 
 .txt.7.html:
 	$(AM_V_GEN)$(ASCIIDOC) -d manpage -b xhtml11 \
-        -a stylesheet=$(abs_srcdir)/doc/htmldoc.css \
-        -f $(abs_srcdir)/doc/asciidoc.conf \
+        -a stylesheet=$(abs_srcdir)/man/htmldoc.css \
+        -f $(abs_srcdir)/man/asciidoc.conf \
         -aversion=@GRID_PACKAGE_VERSION@ -o $@ $<
 
 #  Cause man pages to be generated and installed.
@@ -400,7 +400,7 @@ endif
 
 #  Extra files to be included into the source package.
 
-EXTRA_DIST += doc/asciidoc.conf doc/htmldoc.css $(MAN1) $(MAN3) $(MAN7)
+EXTRA_DIST += man/asciidoc.conf man/htmldoc.css $(MAN1) $(MAN3) $(MAN7)
 
 LDADD = libgridmq.la
 
@@ -409,49 +409,49 @@ LDADD = libgridmq.la
 ################################################################################
 
 TRANSPORT_TESTS = \
-    tests/inproc \
-    tests/inproc_shutdown \
-    tests/ipc \
-    tests/ipc_shutdown \
-    tests/ipc_stress \
-    tests/tcp \
-    tests/tcp_shutdown
+    t/inproc \
+    t/inproc_shutdown \
+    t/ipc \
+    t/ipc_shutdown \
+    t/ipc_stress \
+    t/tcp \
+    t/tcp_shutdown
 
 PROTOCOL_TESTS = \
-    tests/pair \
-    tests/pubsub \
-    tests/reqrep \
-    tests/pipeline \
-    tests/survey \
-    tests/bus
+    t/pair \
+    t/pubsub \
+    t/reqrep \
+    t/pipeline \
+    t/survey \
+    t/bus
 
 FEATURE_TESTS = \
-    tests/async_shutdown \
-    tests/block \
-    tests/term \
-    tests/timeo \
-    tests/iovec \
-    tests/msg \
-    tests/prio \
-    tests/poll \
-    tests/device \
-    tests/device4 \
-    tests/device5 \
-    tests/device6 \
-    tests/device7 \
-    tests/emfile \
-    tests/domain \
-    tests/trie \
-    tests/list \
-    tests/hash \
-    tests/symbol \
-    tests/separation \
-    tests/zerocopy \
-    tests/shutdown \
-    tests/cmsg \
-    tests/bug328
+    t/async_shutdown \
+    t/block \
+    t/term \
+    t/timeo \
+    t/iovec \
+    t/msg \
+    t/prio \
+    t/poll \
+    t/device \
+    t/device4 \
+    t/device5 \
+    t/device6 \
+    t/device7 \
+    t/emfile \
+    t/domain \
+    t/trie \
+    t/list \
+    t/hash \
+    t/symbol \
+    t/separation \
+    t/zerocopy \
+    t/shutdown \
+    t/cmsg \
+    t/bug328
 
-EXTRA_DIST += tests/testutil.h
+EXTRA_DIST += t/testutil.h
 
 check_PROGRAMS = \
     $(TRANSPORT_TESTS) \

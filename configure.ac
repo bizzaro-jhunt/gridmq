@@ -23,13 +23,15 @@
 ################################################################################
 #  Start the configuration phase.                                              #
 ################################################################################
-
-AC_PREREQ([2.53])
-
 AC_INIT([gridmq], [m4_esyscmd([./package_version.sh])],
    [oss@gridmq.net], [gridmq], [http://gridmq.net/])
+AC_PREREQ([2.53])
 AC_CONFIG_SRCDIR([src/grid.h])
-AM_INIT_AUTOMAKE([1.6 foreign subdir-objects tar-ustar dist-zip])
+AC_CONFIG_AUX_DIR([build])
+AC_CONFIG_MACRO_DIR([build])
+# AC_CONFIG_HEADER([config.h])
+
+AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects tar-ustar dist-zip])
 m4_ifdef([AM_SILENT_RULES],
     [AM_SILENT_RULES([yes])
 ])
@@ -164,6 +166,16 @@ if test "x$enable_debug" = "xyes"; then
     AC_DEFINE([GRID_DEBUG])
 fi
 
+AC_PROG_INSTALL
+
+# AM_PROG_AR is used for linker stuff, but only by newer Automake
+# On older Automakes (<1.12 IIRC) it just complains during ./bootstrap
+# so we use the ifndef trick here to expand if expandable.
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+
+PKG_PROG_PKG_CONFIG
+
+
 ################################################################################
 #  Build the documentation.                                                    #
 ################################################################################
@@ -206,18 +218,6 @@ AS_IF([test x"$enable_gridcat" != "xno" -a x"$enable_symlinks" != x"no"], [
 AM_CONDITIONAL([NANOCAT], [test x"$enable_gridcat" != "xno" ])
 AM_CONDITIONAL([SYMLINKS], [test x"$enable_symlinks" != "xno" ])
 
-################################################################################
-#  Build tcpmuxd                                                               #
-################################################################################
-
-AC_ARG_ENABLE([tcpmuxd],
-    AS_HELP_STRING([--enable-tcpmuxd], [Build tcpmuxd executable [default=yes]])
-)
-
-AS_IF([test x"$enable_tcpmuxd" != "xno"], [
-    AC_PROG_LN_S
-])
-AM_CONDITIONAL([TCPMUXD], [test x"$enable_tcpmuxd" != "xno" ])
 
 ################################################################################
 #  Check which OS we are building for.                                         #
@@ -364,14 +364,14 @@ LT_INIT
 
 DOLT
 
-################################################################################
-#  Finish the configuration phase.                                             #
-################################################################################
+# set pkgconfigdir, allow override
+AC_ARG_WITH([pkgconfigdir],
+    AS_HELP_STRING([--with-pkgconfigdir=PATH],
+        [Path to the pkgconfig directory [[LIBDIR/pkgconfig]]]),
+    [pkgconfigdir="$withval"],
+    [pkgconfigdir='${libdir}/pkgconfig'])
+AC_SUBST([pkgconfigdir])
 
-AC_CONFIG_MACRO_DIR([m4])
-
-AC_OUTPUT([
-Makefile
-libgridmq.pc
-])
+AC_CONFIG_FILES([Makefile src/gridmq.pc])
+AC_OUTPUT
 
