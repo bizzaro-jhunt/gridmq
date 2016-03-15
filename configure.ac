@@ -23,12 +23,14 @@
 ################################################################################
 #  Start the configuration phase.                                              #
 ################################################################################
-AC_INIT([gridmq], [m4_esyscmd([./package_version.sh])],
+AC_INIT([gridmq], [0.1.0],
    [oss@gridmq.net], [gridmq], [http://gridmq.net/])
 AC_PREREQ([2.53])
 AC_CONFIG_SRCDIR([src/grid.h])
 AC_CONFIG_AUX_DIR([build])
 AC_CONFIG_MACRO_DIR([build])
+
+AX_ABI_VERSION([1], [0], [0])
 # AC_CONFIG_HEADER([config.h])
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects tar-ustar dist-zip])
@@ -36,30 +38,12 @@ m4_ifdef([AM_SILENT_RULES],
     [AM_SILENT_RULES([yes])
 ])
 
-AC_CANONICAL_HOST
 
-################################################################################
-#  Retrieve the versions.                                                      #
-################################################################################
+
+AC_CANONICAL_HOST
 
 AC_PROG_SED
 AC_PROG_AWK
-
-GRID_ABI_VERSION=m4_esyscmd([./abi_version.sh])
-GRID_PACKAGE_VERSION=m4_esyscmd([./package_version.sh])
-GRID_LIBTOOL_VERSION=m4_esyscmd([./abi_version.sh -libtool])
-
-AC_SUBST(GRID_ABI_VERSION)
-AC_SUBST(GRID_PACKAGE_VERSION)
-AC_SUBST(GRID_LIBTOOL_VERSION)
-
-AC_MSG_NOTICE([gridmq package version: $GRID_PACKAGE_VERSION])
-AC_MSG_NOTICE([gridmq ABI version: $GRID_ABI_VERSION])
-
-################################################################################
-#  Check the compilers.                                                         #
-################################################################################
-
 AC_PROG_CC_C99
 AM_PROG_CC_C_O
 
@@ -215,7 +199,7 @@ AC_ARG_ENABLE([symlinks],
 AS_IF([test x"$enable_gridcat" != "xno" -a x"$enable_symlinks" != x"no"], [
     AC_PROG_LN_S
 ])
-AM_CONDITIONAL([NANOCAT], [test x"$enable_gridcat" != "xno" ])
+AM_CONDITIONAL([GRIDCAT], [test x"$enable_gridcat" != "xno" ])
 AM_CONDITIONAL([SYMLINKS], [test x"$enable_symlinks" != "xno" ])
 
 

@@ -28,8 +28,10 @@ EXTRA_DIST =
 #  gridmq library                                                              #
 ################################################################################
 
-nnincludedir = $(includedir)/gridmq
-nninclude_HEADERS = \
+lib_LTLIBRARIES = libgridmq.la
+
+gridincludedir = $(includedir)/gridmq
+gridinclude_HEADERS = \
     src/grid.h \
     src/inproc.h \
     src/ipc.h \
@@ -40,8 +42,6 @@ nninclude_HEADERS = \
     src/pipeline.h \
     src/survey.h \
     src/bus.h
-
-lib_LTLIBRARIES = libgridmq.la
 
 GRIDMQ_CORE = \
     src/core/ep.h \
@@ -297,7 +297,7 @@ libgridmq_la_SOURCES = \
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = src/gridmq.pc
 
-libgridmq_la_LDFLAGS = -no-undefined -version-info @GRID_LIBTOOL_VERSION@
+libgridmq_la_LDFLAGS = -no-undefined -version-info @SOVERSION@
 libgridmq_la_CFLAGS = -DGRID_EXPORTS
 
 ################################################################################
@@ -353,7 +353,7 @@ if DOC
 .txt.xml:
 	$(AM_V_GEN)$(ASCIIDOC) -d manpage -b docbook \
         -f $(abs_srcdir)/man/asciidoc.conf \
-        -aversion=@GRID_PACKAGE_VERSION@ -o $@ $<
+        -aversion=@PACKAGE_VERSION@ -o $@ $<
 
 SUFFIXES = .1 .3 .7 .1.html .3.html .7.html
 .xml.1:
@@ -367,19 +367,19 @@ SUFFIXES = .1 .3 .7 .1.html .3.html .7.html
 	$(AM_V_GEN)$(ASCIIDOC) -d manpage -b xhtml11 \
         -a stylesheet=$(abs_srcdir)/man/htmldoc.css \
         -f $(abs_srcdir)/,am/asciidoc.conf \
-        -aversion=@GRID_PACKAGE_VERSION@ -o $@ $<
+        -aversion=@PACKAGE_VERSION@ -o $@ $<
 
 .txt.3.html:
 	$(AM_V_GEN)$(ASCIIDOC) -d manpage -b xhtml11 \
         -a stylesheet=$(abs_srcdir)/man/htmldoc.css \
         -f $(abs_srcdir)/man/asciidoc.conf \
-        -aversion=@GRID_PACKAGE_VERSION@ -o $@ $<
+        -aversion=@PACKAGE_VERSION@ -o $@ $<
 
 .txt.7.html:
 	$(AM_V_GEN)$(ASCIIDOC) -d manpage -b xhtml11 \
         -a stylesheet=$(abs_srcdir)/man/htmldoc.css \
         -f $(abs_srcdir)/man/asciidoc.conf \
-        -aversion=@GRID_PACKAGE_VERSION@ -o $@ $<
+        -aversion=@PACKAGE_VERSION@ -o $@ $<
 
 #  Cause man pages to be generated and installed.
 
@@ -472,24 +472,9 @@ gridcat_SOURCES = \
 	tools/options.c \
 	tools/options.h
 
-if NANOCAT
+
+if GRIDCAT
 bin_PROGRAMS += gridcat
-endif #NANOCAT
-
-
-################################################################################
-#  additional packaging-related stuff                                          #
-################################################################################
-
-#  Generate ChangeLog file from git.
-#  Also, there's no git availabe when building from the source package and
-#  thus no way to obtain package version. Therefore, package version is
-#  saved into a file when building a source package.
-dist-hook:
-	$(srcdir)/package_version.sh > $(distdir)/.version
-
-
-if NANOCAT
 if SYMLINKS
 
 install-exec-hook:
@@ -522,13 +507,8 @@ uninstall-hook:
 	cd $(DESTDIR)$(includedir) && \
           rm -rf gridmq
 
-endif #SYMLINKS
-endif #NANOCAT
-
-
-EXTRA_DIST += \
-    ./abi_version.sh \
-    ./package_version.sh
+endif
+endif
 
 diagrams:
 	-mkdir -p doc/diagrams
@@ -538,4 +518,3 @@ diagrams:
 
 clean-local:
 	-rm -f test.ipc test-shutdown.ipc test-separation.ipc test-stress.ipc
-

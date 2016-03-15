@@ -3,10 +3,10 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@/gridmq
 
-Name: Nanomsg
+Name: @PACKAGE_NAME@
 Description: gridmq library is a high-performance implementation of several scalability protocols.
-URL: http://gridmq.net/
-Version: @GRID_ABI_VERSION@
+URL: @PACKAGE_URL@
+Version: @PACKAGE_VERSION@
 Requires:
 Libs: -L${libdir} -lgridmq @LIBS@
 Cflags: -I${includedir}

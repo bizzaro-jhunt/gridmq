@@ -2,6 +2,7 @@
 build/*
 !build/ax_pthread.m4
 !build/dolt.m4
+!build/abi.m4
 *.a
 *.deps
 *.la
