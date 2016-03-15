@@ -39,17 +39,7 @@ void grid_sem_post (struct grid_sem *self);
 /*  Waits till sem object becomes unlocked and locks it. */
 int grid_sem_wait (struct grid_sem *self);
 
-#if defined GRID_HAVE_OSX
-
-#include <pthread.h>
-
-struct grid_sem {
-    pthread_mutex_t mutex;
-    pthread_cond_t cond;
-    int signaled;
-};
-
-#elif defined GRID_HAVE_SEMAPHORE
+#if defined GRID_HAVE_SEMAPHORE
 
 #include <semaphore.h>
 

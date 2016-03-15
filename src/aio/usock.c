@@ -201,11 +201,7 @@ static void grid_usock_init_from_fd (struct grid_usock *self, int s)
         the option) but the problem is pretty unlikely to happen. */
 #if defined FD_CLOEXEC
     rc = fcntl (self->s, F_SETFD, FD_CLOEXEC);
-#if defined GRID_HAVE_OSX
-    errno_assert (rc != -1 || errno == EINVAL);
-#else
     errno_assert (rc != -1);
-#endif
 #endif
 
     /* If applicable, prevent SIGPIPE signal when writing to the connection
@@ -213,11 +209,7 @@ static void grid_usock_init_from_fd (struct grid_usock *self, int s)
 #ifdef SO_NOSIGPIPE
     opt = 1;
     rc = setsockopt (self->s, SOL_SOCKET, SO_NOSIGPIPE, &opt, sizeof (opt));
-#if defined GRID_HAVE_OSX
-    errno_assert (rc == 0 || errno == EINVAL);
-#else
     errno_assert (rc == 0);
-#endif
 #endif
 
     /* Switch the socket to the non-blocking mode. All underlying sockets
@@ -227,11 +219,7 @@ static void grid_usock_init_from_fd (struct grid_usock *self, int s)
         opt = 0;
     if (!(opt & O_NONBLOCK)) {
         rc = fcntl (self->s, F_SETFL, opt | O_NONBLOCK);
-#if defined GRID_HAVE_OSX
-        errno_assert (rc != -1 || errno == EINVAL);
-#else
         errno_assert (rc != -1);
-#endif
     }
 }
 
@@ -260,19 +248,8 @@ int grid_usock_setsockopt (struct grid_usock *self, int level, int optname,
     grid_assert (self->state == GRID_USOCK_STATE_STARTING ||
         self->state == GRID_USOCK_STATE_ACCEPTED);
 
-    /*  EINVAL errors are ignored on OSX platform. The reason for that is buggy
-        OSX behaviour where setsockopt returns EINVAL if the peer have already
-        disconnected. Thus, grid_usock_setsockopt() can succeed on OSX even though
-        the option value was invalid, but the peer have already closed the
-        connection. This behaviour should be relatively harmless. */
-    rc = setsockopt (self->s, level, optname, optval, (socklen_t) optlen);
-#if defined GRID_HAVE_OSX
-    if (grid_slow (rc != 0 && errno != EINVAL))
-        return -errno;
-#else
     if (grid_slow (rc != 0))
         return -errno;
-#endif
 
     return 0;
 }

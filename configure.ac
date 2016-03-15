@@ -209,7 +209,6 @@ AM_CONDITIONAL([SYMLINKS], [test x"$enable_symlinks" != "xno" ])
 
 AS_CASE([${host_os}],
     [*linux*],   [AC_DEFINE([GRID_HAVE_LINUX])],
-    [*darwin*],  [AC_DEFINE([GRID_HAVE_OSX])],
     [*freebsd*], [AC_DEFINE([GRID_HAVE_FREEBSD])],
     [*netbsd*],  [AC_DEFINE([GRID_HAVE_NETBSD])],
     [*openbsd*], [AC_DEFINE([GRID_HAVE_OPENBSD])],

@@ -21,9 +21,7 @@
     IN THE SOFTWARE.
 */
 
-#if defined GRID_HAVE_OSX
-#include <mach/mach_time.h>
-#elif defined GRID_HAVE_CLOCK_MONOTONIC || defined GRID_HAVE_GETHRTIME
+#if defined GRID_HAVE_CLOCK_MONOTONIC || defined GRID_HAVE_GETHRTIME
 #include <time.h>
 #else
 #include <sys/time.h>
@@ -37,10 +35,6 @@
 /* 1 millisecond expressed in CPU ticks. The value is chosen is such a way that
    it works pretty well for CPU frequencies above 500MHz. */
 #define GRID_CLOCK_PRECISION 1000000
-
-#if defined GRID_HAVE_OSX
-static mach_timebase_info_data_t grid_clock_timebase_info;
-#endif
 
 static uint64_t grid_clock_rdtsc ()
 {
@@ -66,19 +60,7 @@ static uint64_t grid_clock_rdtsc ()
 
 static uint64_t grid_clock_time ()
 {
-#if defined GRID_HAVE_OSX
-
-    uint64_t ticks;
-
-    /*  If the global timebase info is not initialised yet, init it. */
-    if (grid_slow (!grid_clock_timebase_info.denom))
-        mach_timebase_info (&grid_clock_timebase_info);
-
-    ticks = mach_absolute_time ();
-    return ticks * grid_clock_timebase_info.numer /
-        grid_clock_timebase_info.denom / 1000000;
-
-#elif defined GRID_HAVE_CLOCK_MONOTONIC
+#if defined GRID_HAVE_CLOCK_MONOTONIC
 
     int rc;
     struct timespec tv;
