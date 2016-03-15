@@ -24,74 +24,7 @@
 #include "err.h"
 #include "fast.h"
 
-#if defined GRID_HAVE_OSX
-
-void grid_sem_init (struct grid_sem *self)
-{
-    int rc;
-
-    rc = pthread_mutex_init (&self->mutex, NULL);
-    errnum_assert (rc == 0, rc);
-    rc = pthread_cond_init (&self->cond, NULL);
-    errnum_assert (rc == 0, rc);
-    self->signaled = 0;
-}
-
-void grid_sem_term (struct grid_sem *self)
-{
-    int rc;
-
-    rc = pthread_cond_destroy (&self->cond);
-    errnum_assert (rc == 0, rc);
-    rc = pthread_mutex_destroy (&self->mutex);
-    errnum_assert (rc == 0, rc);
-}
-
-void grid_sem_post (struct grid_sem *self)
-{
-    int rc;
-
-    rc = pthread_mutex_lock (&self->mutex);
-    errnum_assert (rc == 0, rc);
-    grid_assert (self->signaled == 0);
-    self->signaled = 1;
-    rc = pthread_cond_signal (&self->cond);
-    errnum_assert (rc == 0, rc);
-    rc = pthread_mutex_unlock (&self->mutex);
-    errnum_assert (rc == 0, rc);
-}
-
-int grid_sem_wait (struct grid_sem *self)
-{
-    int rc;
-
-    /*  With OSX, semaphores are global named objects. They are not useful for
-        our use case. To get a similar object we exploit the implementation
-        detail of pthread_cond_wait() in Darwin kernel: It exits if signal is
-        caught. Note that this behaviour is not mandated by POSIX
-        and may break with future versions of Darwin. */
-    rc = pthread_mutex_lock (&self->mutex);
-    errnum_assert (rc == 0, rc);
-    if (grid_fast (self->signaled)) {
-        rc = pthread_mutex_unlock (&self->mutex);
-        errnum_assert (rc == 0, rc);
-        return 0;
-    }
-    rc = pthread_cond_wait (&self->cond, &self->mutex);
-    errnum_assert (rc == 0, rc);
-    if (grid_slow (!self->signaled)) {
-        rc = pthread_mutex_unlock (&self->mutex);
-        errnum_assert (rc == 0, rc);
-        return -EINTR;
-    }
-    self->signaled = 0;
-    rc = pthread_mutex_unlock (&self->mutex);
-    errnum_assert (rc == 0, rc);
-
-    return 0;
-}
-
-#elif defined GRID_HAVE_SEMAPHORE
+#if defined GRID_HAVE_SEMAPHORE
 
 void grid_sem_init (struct grid_sem *self)
 {
@@ -131,4 +64,3 @@ int grid_sem_wait (struct grid_sem *self)
 #else
 #error
 #endif
-
