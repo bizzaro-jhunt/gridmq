@@ -4,6 +4,6 @@ compiler:
 - clang
 - gcc
 script:
-- ./autogen.sh
+- ./bootstrap
 - ./configure
 - make distcheck
